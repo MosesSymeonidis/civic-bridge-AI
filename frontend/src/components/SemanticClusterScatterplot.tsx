@@ -323,10 +323,9 @@ function SemanticClusterScatterplot({
                 className="semantic-cluster-hover-output"
               >
                 <span>Hovered incident</span>
-                <p>
-                  {hoveredPoint.incident_text?.trim() ||
-                    'No incident text was recorded for this point.'}
-                </p>
+                {hoveredPoint.incident_text?.trim() ? (
+                  <p>{hoveredPoint.incident_text.trim()}</p>
+                ) : null}
                 <small>
                   {hoveredPoint.category ?? `Topic ${hoveredPoint.topic_id}`}
                   {' | '}

@@ -52,6 +52,18 @@ function formatDate(value: string): string {
   }).format(new Date(value))
 }
 
+function newestIncidentFirst(
+  left: IncidentReviewItem,
+  right: IncidentReviewItem,
+): number {
+  const leftTime = Date.parse(left.completed_at)
+  const rightTime = Date.parse(right.completed_at)
+  const leftValue = Number.isFinite(leftTime) ? leftTime : 0
+  const rightValue = Number.isFinite(rightTime) ? rightTime : 0
+
+  return rightValue - leftValue || right.id.localeCompare(left.id)
+}
+
 async function readApiError(response: Response): Promise<string> {
   try {
     const body = (await response.json()) as { detail?: string }
@@ -283,7 +295,8 @@ function IncidentReviewQueue({
   const [isSocialPostModalOpen, setIsSocialPostModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
-  const visibleIncidentIds = new Set(queue.items.map((item) => item.id))
+  const orderedItems = [...queue.items].sort(newestIncidentFirst)
+  const visibleIncidentIds = new Set(orderedItems.map((item) => item.id))
   const selectedVisibleIncidentIds = selectedIncidentIds.filter(
     (incidentId) => visibleIncidentIds.has(incidentId),
   )
@@ -389,7 +402,7 @@ function IncidentReviewQueue({
   }
 
   function getSelectedIncidents() {
-    return queue.items.filter((incident) =>
+    return orderedItems.filter((incident) =>
       selectedVisibleIncidentIds.includes(incident.id),
     )
   }
@@ -496,7 +509,7 @@ function IncidentReviewQueue({
         </div>
       ) : (
         <div className="incident-review-list">
-          {queue.items.map((incident) => {
+          {orderedItems.map((incident) => {
             const isSelected = selectedIncidentIds.includes(incident.id)
 
             return (
