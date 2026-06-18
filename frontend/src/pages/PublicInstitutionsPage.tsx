@@ -25,7 +25,7 @@ type InitialDashboardFilters = {
   language: string
   participantType: ParticipantType | ''
   severity: SeverityFilter | ''
-  openReviews: boolean
+  openSelections: boolean
 }
 
 type DistributionItem = {
@@ -73,7 +73,6 @@ type DashboardSummary = {
   bridge_promoters: DistributionItem[]
   age_bands: DistributionItem[]
   languages: DistributionItem[]
-  reviewer_outcomes: DistributionItem[]
   semantic_clusters: SemanticClusterPlot
 }
 
@@ -131,7 +130,9 @@ function initialDashboardFilters(): InitialDashboardFilters {
       ? participantType
       : '',
     severity: isSeverityFilter(severity) ? severity : '',
-    openReviews: params.get('open_reviews') === 'true',
+    openSelections:
+      params.get('open_selections') === 'true' ||
+      params.get('open_reviews') === 'true',
   }
 }
 
@@ -213,8 +214,8 @@ function PublicInstitutionsPage() {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const [reloadToken, setReloadToken] = useState(0)
-  const [isReviewWorkflowOpen, setIsReviewWorkflowOpen] = useState(
-    initialFilters.openReviews,
+  const [isSelectionWorkspaceOpen, setIsSelectionWorkspaceOpen] = useState(
+    initialFilters.openSelections,
   )
   const [isCsvImportOpen, setIsCsvImportOpen] = useState(false)
 
@@ -290,15 +291,15 @@ function PublicInstitutionsPage() {
   ])
 
   useEffect(() => {
-    if (!isReviewWorkflowOpen) return
+    if (!isSelectionWorkspaceOpen) return
 
     const animationFrame = window.requestAnimationFrame(() => {
       document
-        .getElementById('reviews')
+        .getElementById('incident-selections')
         ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
     })
     return () => window.cancelAnimationFrame(animationFrame)
-  }, [isReviewWorkflowOpen])
+  }, [isSelectionWorkspaceOpen])
 
   useEffect(() => {
     if (!isCsvImportOpen) return
@@ -576,14 +577,11 @@ function PublicInstitutionsPage() {
             <small>Aggregated across selected intake channels</small>
           </article>
           <article>
-            <span>Pending human reviews</span>
+            <span>Selectable incidents</span>
             <strong>
               {numberFormatter.format(totals?.pending_reviews ?? 0)}
             </strong>
-            <small>
-              {formatPercentage(totals?.review_completion_rate ?? 0)} of
-              required reviews completed
-            </small>
+            <small>Available for educational or public content generation</small>
           </article>
         </section>
 
@@ -920,44 +918,38 @@ function PublicInstitutionsPage() {
             </div>
           </article>
 
-          <article className="dashboard-card response-outcomes-card">
+          <article className="dashboard-card content-workspace-card">
             <header className="dashboard-card__header">
               <div>
-                <span>Human-in-the-loop outcomes</span>
-                <h2>Reviewer actions</h2>
+                <span>Content generation</span>
+                <h2>Incident selections</h2>
               </div>
             </header>
-            <div className="outcome-list">
-              {dashboard?.reviewer_outcomes.length ? (
-                dashboard.reviewer_outcomes.map((outcome) => (
-                  <div key={outcome.key}>
-                    <strong>{formatPercentage(outcome.percentage)}</strong>
-                    <span>{outcome.label}</span>
-                  </div>
-                ))
-              ) : (
-                <p className="dashboard-empty-state">
-                  No human reviewer actions recorded.
-                </p>
-              )}
-            </div>
+            <p>
+              Select anonymized incidents that match the current filters and
+              turn them into educational content or a public-facing post.
+            </p>
             <button
-              className="reviewer-workspace-button"
-              onClick={() => setIsReviewWorkflowOpen(true)}
+              aria-controls="incident-selections"
+              aria-expanded={isSelectionWorkspaceOpen}
+              className="content-workspace-button"
+              onClick={() =>
+                setIsSelectionWorkspaceOpen((isOpen) => !isOpen)
+              }
               type="button"
             >
-              Review pending incidents
+              Select incidents for content
               <span>{numberFormatter.format(totals?.pending_reviews ?? 0)}</span>
             </button>
           </article>
+
         </section>
 
-        {isReviewWorkflowOpen && (
+        {isSelectionWorkspaceOpen && (
           <IncidentReviewQueue
             apiBaseUrl={apiBaseUrl}
             country={country}
             language={language}
-            onClose={() => setIsReviewWorkflowOpen(false)}
             participantType={participantType}
             ragApiBaseUrl={ragApiBaseUrl}
             regionArea={regionArea}
@@ -980,7 +972,7 @@ function PublicInstitutionsPage() {
             </li>
             <li>No usernames, profile links, or exact locations</li>
             <li>No automated enforcement or legal determination</li>
-            <li>Every consequential interpretation requires human review</li>
+            <li>Generated materials remain advisory and editable</li>
           </ul>
         </section>
       </main>

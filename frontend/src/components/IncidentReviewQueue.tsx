@@ -8,7 +8,6 @@ import {
 import {
   type IncidentReviewItem,
   type IncidentReviewQueue as IncidentReviewQueueData,
-  type ReviewOutcome,
   loadIncidentReviews,
 } from '../services/incidentReviews'
 import { saveEducatorActivityHandoff } from '../services/educatorActivityHandoff'
@@ -29,7 +28,6 @@ type IncidentReviewQueueProps = {
   participantType: DashboardParticipantType | ''
   severity: DashboardSeverity | ''
   refreshToken: number
-  onClose: () => void
 }
 
 type RagChatResponse = {
@@ -37,22 +35,6 @@ type RagChatResponse = {
   references?: ChatReference[]
   citations?: RagCitation[]
 }
-
-const outcomeOptions: Array<{ value: ReviewOutcome; label: string }> = [
-  { value: 'bridge-response-adapted', label: 'Bridge response adapted' },
-  {
-    value: 'educational-activity-created',
-    label: 'Educational activity created',
-  },
-  {
-    value: 'safeguarding-guidance-prioritised',
-    label: 'Safeguarding guidance prioritised',
-  },
-  {
-    value: 'expert-review-requested',
-    label: 'Further expert review requested',
-  },
-]
 
 function humanize(value: string): string {
   return value
@@ -68,13 +50,6 @@ function formatDate(value: string): string {
     hour: '2-digit',
     minute: '2-digit',
   }).format(new Date(value))
-}
-
-function outcomeLabel(value: ReviewOutcome | null): string {
-  return (
-    outcomeOptions.find((option) => option.value === value)?.label ??
-    ''
-  )
 }
 
 async function readApiError(response: Response): Promise<string> {
@@ -218,7 +193,7 @@ function IncidentEvidence({ incident }: { incident: IncidentReviewItem }) {
 
       {incident.rationale.length > 0 && (
         <details>
-          <summary>Review analysis rationale</summary>
+          <summary>Analysis rationale</summary>
           <ul>
             {incident.rationale.map((item, index) => (
               <li key={`${incident.id}-${item.citation_id}-${index}`}>
@@ -231,7 +206,7 @@ function IncidentEvidence({ incident }: { incident: IncidentReviewItem }) {
 
       {incident.barriers.length > 0 && (
         <details>
-          <summary>Review semantic barriers</summary>
+          <summary>Semantic barriers</summary>
           <ul>
             {incident.barriers.map((barrier, index) => (
               <li key={`${incident.id}-${barrier.id}-${index}`}>
@@ -262,9 +237,7 @@ function IncidentReviewQueue({
   participantType,
   severity,
   refreshToken,
-  onClose,
 }: IncidentReviewQueueProps) {
-  const [view, setView] = useState<'pending' | 'reviewed'>('pending')
   const [queue, setQueue] = useState<IncidentReviewQueueData>({
     total: 0,
     items: [],
@@ -297,7 +270,7 @@ function IncidentReviewQueue({
               language,
               participantType,
               severity,
-              reviewed: view === 'reviewed',
+              reviewed: false,
             },
             controller.signal,
           ),
@@ -307,7 +280,7 @@ function IncidentReviewQueue({
           setError(
             requestError instanceof Error
               ? requestError.message
-              : 'The review queue could not be loaded.',
+              : 'The incident selections could not be loaded.',
           )
         }
       } finally {
@@ -326,7 +299,6 @@ function IncidentReviewQueue({
     refreshToken,
     severity,
     timeRange,
-    view,
   ])
 
   function toggleIncidentSelection(incidentId: string, checked: boolean) {
@@ -436,92 +408,55 @@ function IncidentReviewQueue({
   }
 
   return (
-    <section className="incident-review-section" id="reviews">
+    <section className="incident-review-section" id="incident-selections">
       <div className="incident-review-heading">
         <div>
-          <p className="eyebrow">Human review workflow</p>
-          <h2>Select incidents for an in-class activity.</h2>
+          <p className="eyebrow">Incident selection</p>
+          <h2>Select incidents for content generation.</h2>
         </div>
         <div className="incident-review-heading__actions">
           <p>
             Choose one or more anonymized incidents and turn them into a
-            guided learning activity in the educator workspace.
+            guided educational activity or public-facing post.
           </p>
-          <button onClick={onClose} type="button">
-            Close reviewer workspace
-          </button>
         </div>
       </div>
 
       <div className="incident-review-toolbar">
-        <div role="tablist" aria-label="Incident review status">
-          <button
-            aria-selected={view === 'pending'}
-            className={view === 'pending' ? 'is-active' : ''}
-            onClick={() => {
-              setView('pending')
-              setSelectedIncidentIds([])
-            }}
-            role="tab"
-            type="button"
-          >
-            Pending review
-          </button>
-          <button
-            aria-selected={view === 'reviewed'}
-            className={view === 'reviewed' ? 'is-active' : ''}
-            onClick={() => {
-              setView('reviewed')
-              setSelectedIncidentIds([])
-            }}
-            role="tab"
-            type="button"
-          >
-            Reviewed
-          </button>
-        </div>
         <div className="incident-review-toolbar__summary">
           <strong>{queue.total} incidents</strong>
-          {view === 'pending' && (
-            <>
-              <button
-                className="incident-review-activity-button"
-                disabled={selectedVisibleIncidentIds.length === 0}
-                onClick={handleCreateActivity}
-                type="button"
-              >
-                Create an in-class activity
-                <span>{selectedVisibleIncidentIds.length}</span>
-              </button>
-              <button
-                className="incident-review-social-button"
-                disabled={
-                  selectedVisibleIncidentIds.length === 0 ||
-                  isCreatingSocialPost
-                }
-                onClick={handleCreateSocialMediaPost}
-                type="button"
-              >
-                {isCreatingSocialPost
-                  ? 'Creating post...'
-                  : 'Create a social media post'}
-                <span>{selectedVisibleIncidentIds.length}</span>
-              </button>
-            </>
-          )}
+          <button
+            className="incident-review-activity-button"
+            disabled={selectedVisibleIncidentIds.length === 0}
+            onClick={handleCreateActivity}
+            type="button"
+          >
+            Create educational content
+            <span>{selectedVisibleIncidentIds.length}</span>
+          </button>
+          <button
+            className="incident-review-social-button"
+            disabled={
+              selectedVisibleIncidentIds.length === 0 ||
+              isCreatingSocialPost
+            }
+            onClick={handleCreateSocialMediaPost}
+            type="button"
+          >
+            {isCreatingSocialPost
+              ? 'Creating post...'
+              : 'Create a social media post'}
+            <span>{selectedVisibleIncidentIds.length}</span>
+          </button>
         </div>
       </div>
 
       {error && <p className="incident-review-error" role="alert">{error}</p>}
       {isLoading ? (
-        <p className="dashboard-empty-state">Loading incident reviews...</p>
+        <p className="dashboard-empty-state">Loading incident selections...</p>
       ) : queue.items.length === 0 ? (
         <div className="incident-review-empty">
-          <strong>
-            {view === 'pending'
-              ? 'No incidents are waiting for review.'
-              : 'No reviewed incidents match these filters.'}
-          </strong>
+          <strong>No incidents are available for selection.</strong>
           <p>The queue follows the dashboard filters and selected time range.</p>
         </div>
       ) : (
@@ -557,44 +492,23 @@ function IncidentReviewQueue({
                     <span className="incident-review-id">
                       {incident.id.slice(0, 8)}
                     </span>
-                    {view === 'pending' && (
-                      <label className="incident-review-select">
-                        <input
-                          checked={isSelected}
-                          onChange={(event) =>
-                            toggleIncidentSelection(
-                              incident.id,
-                              event.target.checked,
-                            )
-                          }
-                          type="checkbox"
-                        />
-                        <span>{isSelected ? 'Selected' : 'Select'}</span>
-                      </label>
-                    )}
+                    <label className="incident-review-select">
+                      <input
+                        checked={isSelected}
+                        onChange={(event) =>
+                          toggleIncidentSelection(
+                            incident.id,
+                            event.target.checked,
+                          )
+                        }
+                        type="checkbox"
+                      />
+                      <span>{isSelected ? 'Selected' : 'Select'}</span>
+                    </label>
                   </div>
                 </header>
 
                 <IncidentEvidence incident={incident} />
-
-                {view === 'reviewed' && (
-                  <div className="incident-review-audit">
-                    {incident.reviewer_outcome && (
-                      <strong>
-                        {outcomeLabel(incident.reviewer_outcome)}
-                      </strong>
-                    )}
-                    <span>
-                      {incident.reviewer_reference ?? 'Reviewer not recorded'}
-                      {incident.reviewed_at
-                        ? ` · ${formatDate(incident.reviewed_at)}`
-                        : ''}
-                    </span>
-                    {incident.reviewer_notes && (
-                      <p>{incident.reviewer_notes}</p>
-                    )}
-                  </div>
-                )}
               </article>
             )
           })}

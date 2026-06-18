@@ -44,7 +44,7 @@ export function buildIncidentProfileDashboardUrl(
 
   url.searchParams.set('time_range', '30d')
   url.searchParams.set('minimum_group_size', '1')
-  url.searchParams.set('open_reviews', 'true')
+  url.searchParams.set('open_selections', 'true')
 
   if (profile.country) {
     url.searchParams.set('country', profile.country)

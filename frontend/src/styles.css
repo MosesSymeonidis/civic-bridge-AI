@@ -4017,18 +4017,6 @@ footer p {
   line-height: 1.65;
 }
 
-.incident-review-heading__actions button {
-  margin-top: 0.8rem;
-  padding: 0;
-  border: 0;
-  color: var(--green);
-  background: transparent;
-  font: inherit;
-  font-size: 0.61rem;
-  font-weight: 800;
-  cursor: pointer;
-}
-
 .incident-review-toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -5321,44 +5309,25 @@ footer p {
   background: #9caaa2;
 }
 
-.outcome-list {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.65rem;
-  margin-top: 1.25rem;
-}
-
-.outcome-list > div {
+.content-workspace-card {
   display: flex;
   flex-direction: column;
-  min-height: 90px;
-  padding: 0.9rem;
-  border: 1px solid #e0e4df;
-  border-radius: 0.75rem;
-  background: #f7f8f5;
 }
 
-.outcome-list strong {
-  color: var(--green);
-  font-family: Georgia, "Times New Roman", serif;
-  font-size: 1.4rem;
-  font-weight: 500;
-}
-
-.outcome-list span {
-  margin-top: auto;
+.content-workspace-card > p {
+  margin: 1rem 0 0;
   color: #66736c;
-  font-size: 0.58rem;
-  line-height: 1.4;
+  font-size: 0.66rem;
+  line-height: 1.6;
 }
 
-.reviewer-workspace-button {
+.content-workspace-button {
   display: flex;
   gap: 0.75rem;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  margin-top: 1rem;
+  margin-top: auto;
   padding: 0.75rem 0.85rem;
   border: 0;
   border-radius: 0.65rem;
@@ -5370,7 +5339,11 @@ footer p {
   cursor: pointer;
 }
 
-.reviewer-workspace-button span {
+.content-workspace-card > p + .content-workspace-button {
+  margin-top: 1rem;
+}
+
+.content-workspace-button span {
   display: grid;
   min-width: 25px;
   height: 25px;
@@ -5560,9 +5533,10 @@ footer p {
     grid-column: 1 / -1;
   }
 
-  .response-outcomes-card {
+  .content-workspace-card {
     grid-column: 1 / -1;
   }
+
 }
 
 @media (max-width: 780px) {
@@ -5731,7 +5705,7 @@ footer p {
     grid-column: auto;
   }
 
-  .response-outcomes-card {
+  .content-workspace-card {
     grid-column: auto;
   }
 
@@ -6011,7 +5985,6 @@ footer p {
     width: 100%;
   }
 
-  .outcome-list,
   .dashboard-safeguards ul {
     grid-template-columns: 1fr;
   }
