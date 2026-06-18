@@ -1,0 +1,321 @@
+Metadata-Version: 2.4
+Name: hate-speech-semantic-clustering
+Version: 0.1.0
+Summary: A reproducible HateXplain and BERTopic semantic clustering pipeline.
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: bertopic==0.17.4
+Requires-Dist: fastapi<1,>=0.115
+Requires-Dist: joblib>=1.3
+Requires-Dist: pandas>=1.5
+Requires-Dist: scikit-learn>=1.2
+Requires-Dist: sentence-transformers>=3.0
+Requires-Dist: uvicorn<1,>=0.30
+Provides-Extra: dev
+Requires-Dist: pytest>=8.0; extra == "dev"
+
+# Hate-Speech Semantic Clustering
+
+This project provides the HateXplain dataset and a reproducible BERTopic
+pipeline for discovering semantic themes in hate speech.
+
+> **Content warning:** the files contain offensive and hateful language,
+> including identity-directed slurs.
+
+The full trained model is available at `artifacts/bertopic-full/model`. Its
+training details and limitations are documented in
+`artifacts/bertopic-full/MODEL_CARD.md`.
+
+## Dataset
+
+The included [HateXplain](https://github.com/hate-alert/HateXplain) data has
+20,148 English posts, each annotated by three people:
+
+- Content label: `hatespeech`, `offensive`, or `normal`
+- Target communities: multi-valued identity/group annotations
+- Rationales: token-level masks identifying evidence for the annotation
+- Official train/validation/test post IDs
+
+Files:
+
+- `data/raw/hatexplain.json`: original annotator-level dataset
+- `data/raw/post_id_divisions.json`: official data splits
+- `data/processed/hatexplain.jsonl`: generated consensus view
+
+The original HateXplain preprocessing excludes 919 posts for which all three
+annotators chose different content labels. This project preserves those posts
+in the raw file and marks them `undecided` in the normalizer. By default, the
+processed JSONL excludes them and contains the 19,229 official split records.
+
+Run:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
+prepare-hatexplain
+```
+
+Each processed record contains the text, official split, consensus content
+label, all label vote counts, target labels supported by at least two
+annotators, and all target vote counts. The raw annotations and rationales
+remain available in `data/raw/hatexplain.json`.
+
+HateXplain is multi-aspect rather than fully multi-label: the content class is
+mutually exclusive, while target communities can overlap. If the required
+output is a true overlapping hate-category taxonomy, an alternative is
+[K-MHaS](https://arxiv.org/abs/2208.10684), which has 109,692 Korean comments
+and eight fine-grained labels with up to four labels per comment. For English
+speech-act labels such as threat, exclusion, dehumanization, and stereotype,
+the safer route is to define an annotation guide, use the clusters for
+sampling, and have domain experts label a new multi-label training set.
+
+## Can BERTopic Be Used?
+
+Yes, for **topic discovery and semantic clustering**. It is not a substitute
+for a hate-speech classifier.
+
+Use the two tasks separately:
+
+1. A supervised classifier predicts moderation labels such as hate,
+   offensive, normal, and target groups.
+2. BERTopic discovers recurring semantic themes inside a selected population,
+   such as hateful and offensive training posts.
+3. Annotated labels are joined back after clustering to measure each topic's
+   class and target-group composition.
+4. A human reviews representative documents before a topic is named or used
+   operationally.
+
+This separation prevents an unsupervised topic ID from being interpreted as a
+verified hate category. A cluster may reflect an event, phrase, dialect,
+identity term, source platform, or annotation artifact rather than a harmful
+speech act.
+
+## How Clustering Works
+
+The implemented BERTopic pipeline follows these stages:
+
+1. A sentence-transformer maps each post to a dense semantic embedding.
+2. UMAP reduces the embedding dimensions while retaining local neighborhoods.
+3. HDBSCAN finds dense groups and assigns noisy points to topic `-1`.
+4. BERTopic aggregates documents in each group.
+5. Class-based TF-IDF identifies words and phrases distinctive to each group.
+6. `KeyBERTInspired` refines the displayed topic terms.
+7. Content-label and multi-label target distributions are calculated
+   post-clustering.
+
+The default run is deliberately unsupervised. BERTopic can also steer UMAP
+with the single consensus content label using `--guided-content-labels`.
+Target communities are multi-label, so they are analyzed post hoc rather than
+passed into BERTopic's single `y` value.
+
+## Run BERTopic
+
+Start with the hateful and offensive portion of the training split:
+
+```bash
+cluster-hatexplain \
+  --input data/processed/hatexplain.jsonl \
+  --output-dir artifacts/bertopic
+```
+
+For a faster CPU smoke run:
+
+```bash
+cluster-hatexplain --max-documents 2000 --min-topic-size 20
+```
+
+Useful alternatives:
+
+```bash
+# Include normal posts
+cluster-hatexplain --labels all
+
+# Nudge clusters using the single content label
+cluster-hatexplain --guided-content-labels
+
+# Use all official splits for purely exploratory analysis
+cluster-hatexplain --split all
+```
+
+For a compact Python example that fits a model, prints each cluster's label
+and target composition, and assigns one new post:
+
+```bash
+source .venv/bin/activate
+python examples/basic_usage.py --documents 500
+```
+
+The first model run downloads the sentence-transformer weights. Outputs
+include:
+
+- `topic_info.csv`: topic sizes and BERTopic names
+- `document_topics.csv`: topic assignment for each post
+- `topic_content_labels.csv`: content-label composition per topic
+- `topic_targets.csv`: multi-label target composition per topic
+- `topics_per_class.csv`: topic wording by content class
+- `topic_terms.json`: weighted terms for each topic
+- `run_report.json`: parameters, topic count, and outlier rate
+- `model/`: serialized BERTopic model
+
+## Integrate With Another Project
+
+First fit the final model on the intended corpus:
+
+```bash
+cluster-hatexplain --output-dir artifacts/bertopic
+```
+
+Install this project into the other project's Python environment:
+
+```bash
+pip install -e /home/moses/hate-speech-classifier
+```
+
+Load the model once when that application starts:
+
+```python
+from hate_speech_clustering.inference import TopicClusterer
+
+clusterer = TopicClusterer(
+    "/home/moses/hate-speech-classifier/artifacts/bertopic/model",
+    min_confidence=0.25,
+)
+
+result = clusterer.predict("Text received by the other project")
+print(result.to_dict())
+```
+
+Example response:
+
+```json
+{
+  "topic": 3,
+  "candidate_topic": 3,
+  "confidence": 0.61,
+  "is_outlier": false,
+  "label": "Anti-Immigrant Exclusion Rhetoric",
+  "candidate_label": "Anti-Immigrant Exclusion Rhetoric",
+  "group": "Anti-Immigrant and Refugee Hate",
+  "candidate_group": "Anti-Immigrant and Refugee Hate",
+  "generated_label": "3_exclusion_migrants_leave",
+  "top_words": ["exclusion", "migrants", "leave"]
+}
+```
+
+`topic=-1` means no accepted cluster. This occurs when BERTopic itself returns
+an outlier or the similarity is below `min_confidence`. Set
+`min_confidence=None` to force every text into its nearest topic.
+For a rejected assignment, `label` is the outlier label and
+`candidate_label` identifies the nearest cluster that failed the threshold.
+`group` is the broader parent category intended for simpler downstream use.
+For the portable safetensors model written by this project, `confidence` is
+cosine similarity to the learned topic embedding. Tune `min_confidence` on
+held-out validation text instead of treating `0.25` as a universal cutoff.
+
+For command-line or cross-language integration:
+
+```bash
+predict-cluster \
+  --model artifacts/bertopic/model \
+  "Text received by another service"
+```
+
+The command prints JSON, so a Node.js, Java, or other application can call it
+as a subprocess. For a production service, keep one Python process alive and
+reuse one `TopicClusterer`; loading the transformer for every request is slow.
+Batch traffic should use `clusterer.predict_many(texts)`.
+
+Treat the model directory and cluster IDs as a versioned artifact. Retraining
+can change topic IDs and meanings, so downstream systems should store a model
+version alongside each prediction.
+
+The full model's reviewed names, broad categories, and descriptions are in
+`artifacts/bertopic-full/topic_labels.json`. The labels are exploratory human
+interpretations of representative documents, not independently validated
+policy annotations. `generated_label` retains BERTopic's original keyword
+summary for auditing.
+
+## FastAPI Service
+
+Build the fixed 2D projection once:
+
+```bash
+source .venv/bin/activate
+build-cluster-projection
+```
+
+Start the API:
+
+```bash
+serve-cluster-api
+```
+
+Submit a sentence:
+
+```bash
+curl -X POST http://127.0.0.1:8000/predict \
+  -H 'Content-Type: application/json' \
+  -d '{"text":"Text to assign into the semantic space"}'
+```
+
+Response:
+
+```json
+{
+  "text": "Text to assign into the semantic space",
+  "topic_id": 2,
+  "parent_category": "Anti-Muslim and Anti-Arab Hate",
+  "category": "Anti-Muslim Ideology and Rights Rhetoric",
+  "confidence": 0.67,
+  "is_outlier": false,
+  "keywords": [
+    {"term": "muslims", "weight": 0.31}
+  ],
+  "keywords_topic_id": 2,
+  "coordinates": {
+    "x": 4.12,
+    "y": -1.84,
+    "projection_version": "hatexplain-umap-2d-2026-06-13"
+  },
+  "nearest_candidate": {
+    "topic_id": 2,
+    "parent_category": "Anti-Muslim and Anti-Arab Hate",
+    "category": "Anti-Muslim Ideology and Rights Rhetoric"
+  }
+}
+```
+
+The coordinates come from a saved 2D UMAP fitted on all training-document
+embeddings. This makes points comparable across API requests. The 2D
+projection is for visualization and does not change the trained cluster.
+Keywords describe the selected topic; topic assignment itself uses embedding
+similarity rather than literal keyword rules.
+
+Interactive API documentation is available at `http://127.0.0.1:8000/docs`.
+
+## Recommended Experimental Design
+
+Fit topic discovery on `train`. Tune clustering with stability, outlier rate,
+topic diversity, representative-document review, and usefulness to domain
+experts. Keep `val` for parameter selection and `test` for a final frozen
+analysis.
+
+Do not optimize only for agreement between clusters and hate labels. Topic
+clusters should usually be finer-grained than `hatespeech`/`offensive`.
+Review identity concentration carefully: generic embeddings can cluster
+identity mentions even when the underlying speech act differs.
+
+For a fixed policy taxonomy such as threat, dehumanization, exclusion,
+stereotype, or insult, use BERTopic's zero-shot topics as an exploratory
+assignment layer, then train and evaluate a supervised multi-label classifier
+on human-validated annotations.
+
+## Sources
+
+- [BERTopic documentation](https://maartengr.github.io/BERTopic/)
+- [BERTopic algorithm](https://maartengr.github.io/BERTopic/algorithm/algorithm.html)
+- [BERTopic semi-supervised modeling](https://maartengr.github.io/BERTopic/getting_started/semisupervised/semisupervised.html)
+- [BERTopic topics per class](https://maartengr.github.io/BERTopic/getting_started/topicsperclass/topicsperclass.html)
+- [HateXplain repository and dataset](https://github.com/hate-alert/HateXplain)
+- [HateXplain paper](https://ojs.aaai.org/index.php/AAAI/article/view/17745)

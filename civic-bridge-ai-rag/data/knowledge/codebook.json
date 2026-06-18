@@ -1,0 +1,330 @@
+{
+  "version": 1,
+  "promoters": {
+    "recognising_ingroup_bias": {
+      "label": "Recognising ingroup bias",
+      "guidance": "Help the speaker notice that every group, including their own, produces a flattering, self-serving version of events ('here we go again, same story, different country'), so the outgroup's account is not uniquely distorted.",
+      "source": "Gillespie (2008); Ivanovic et al. (2024)"
+    },
+    "contextualisation": {
+      "label": "Contextualisation",
+      "guidance": "Place the claim in its socio-political context: when was it said, under what pressures, by whom and for which audience? Restoring context reopens the meaning a loaded frame had closed down.",
+      "source": "Gillespie (2008); Avraamidou & Psaltis (2019)"
+    },
+    "corroboration": {
+      "label": "Corroboration",
+      "guidance": "Bring in independent third sources to test a claim, rather than accepting or rejecting it on the basis of who said it.",
+      "source": "Gillespie (2008); Ivanovic et al. (2024)"
+    },
+    "outgroup_empathy": {
+      "label": "Outgroup empathy",
+      "guidance": "Legitimise the other group's emotional experience and concrete losses ('they too lost homes and family'), so the people behind the alternative view become visible again.",
+      "source": "Gillespie (2008); Psaltis (2012)"
+    },
+    "superordinate_identity": {
+      "label": "Superordinate identity",
+      "guidance": "Invite the speaker and audience to see both groups as members of a larger shared category (neighbours, islanders, Europeans, humans) so the us-versus-them frame loses force.",
+      "source": "Gaertner & Dovidio (2000); Psaltis (2012)"
+    },
+    "condemnation_of_harm_regardless_of_perpetrator": {
+      "label": "Condemnation of harm regardless of perpetrator",
+      "guidance": "Condemn wrongdoing whoever commits it, refusing to excuse or amplify harm on the basis of group membership; this separates a stigmatising slur from a principled moral stand.",
+      "source": "Gillespie (2008); RFCDC (Barrett et al., 2018)"
+    }
+  },
+  "barriers": {
+    "rigid_opposition": {
+      "label": "Rigid opposition",
+      "definition": "Binary framing that fixes the relation between us and them a priori, demanding total support or total rejection and leaving no middle ground in which rapprochement or dialogue could occur.",
+      "markers": [
+        "will never",
+        "never change",
+        "they always",
+        "impossible",
+        "all of them",
+        "none of them",
+        "us vs them",
+        "either you",
+        "no in-between"
+      ],
+      "examples": [
+        {
+          "text": "You are either with us or you are one of them. There is no in-between.",
+          "span": "either with us or you are one of them",
+          "note": "Forces a binary identity choice; delegitimises neutrality and dialogue."
+        },
+        {
+          "text": "They will never change, it is in their nature, and we can never live alongside them.",
+          "span": "never change, it is in their nature",
+          "note": "Essentialises the outgroup and rules out any future rapprochement."
+        }
+      ],
+      "promoters": [
+        "superordinate_identity",
+        "recognising_ingroup_bias"
+      ],
+      "source": "Moscovici (1961/2008); Gillespie (2008)",
+      "activities": {
+        "6-9": "Circle game: children name things both communities love (food, games, songs) and draw one shared thing. What do we have in common?",
+        "10-13": "Venn diagram: where do 'we' and 'they' overlap? Pairs find three shared everyday concerns and present them.",
+        "14-17": "Rewrite the post so it voices the same worry without the either/or frame; compare how each version makes a reader feel.",
+        "18+": "Analyse the post with the common ingroup identity model and draft a bridge formulation that invokes a shared superordinate category."
+      },
+      "review": "pending"
+    },
+    "transfer_of_meaning": {
+      "label": "Transfer of meaning",
+      "definition": "Linking the target to an already richly loaded and hostile category (a foreign power, an enemy ideology, or a contamination/invasion frame) so that the established emotion attaches automatically and no fresh evidence needs to be weighed. This includes dehumanising metaphors that import pre-loaded fear or disgust (flooding, disease, infestation) and conspiracy frames that import pre-loaded hostility toward foreign enemies.",
+      "markers": [
+        "foreign masters",
+        "western plot",
+        "agents of",
+        "tool of",
+        "puppet of",
+        "backed by",
+        "their real bosses",
+        "fifth column",
+        "flooding",
+        "flood of",
+        "invasion",
+        "swamping",
+        "bringing disease",
+        "spreading disease",
+        "infestation",
+        "do not belong here",
+        "they do not belong"
+      ],
+      "examples": [
+        {
+          "text": "These NGOs are just agents of foreign powers pushing their plan on our island.",
+          "span": "agents of foreign powers",
+          "note": "Transfers pre-loaded hostility toward foreign interference onto local civic actors so their arguments need no examination."
+        },
+        {
+          "text": "Anyone calling for reconciliation is a tool of the same outsiders who divided us.",
+          "span": "tool of the same outsiders",
+          "note": "Re-categorises peace advocates under an enemy frame, importing wholesale distrust."
+        },
+        {
+          "text": "Migrants are flooding our schools and bringing disease. They do not belong here.",
+          "span": "flooding our schools and bringing disease",
+          "note": "Flood and disease metaphors transfer pre-loaded fear and disgust onto a group, bypassing any factual claim."
+        }
+      ],
+      "promoters": [
+        "contextualisation",
+        "recognising_ingroup_bias"
+      ],
+      "source": "Moscovici (1961/2008); Gillespie (2008)",
+      "activities": {
+        "6-9": "Sorting game: show that a label ('the bad guys') does not tell us what a real person did today; ask what we would need to find out first.",
+        "10-13": "Spot-the-shortcut: students underline the loaded label in the post and write the actual claim it skips over.",
+        "14-17": "Trace the transfer: identify the loaded category invoked, then research whether it actually fits the person or group being described.",
+        "18+": "Map the representational chain from core opposition to secondary target and write a contextualising rebuttal that re-separates them."
+      },
+      "review": "pending"
+    },
+    "prohibited_thoughts": {
+      "label": "Prohibited thoughts",
+      "definition": "Marking the alternative representation as so dangerous that merely entertaining it invites catastrophe, using fear to prevent people from elaborating or even considering the other view.",
+      "markers": [
+        "catastrophe",
+        "catastrophic",
+        "the end of",
+        "no future",
+        "doomed",
+        "death of",
+        "betray our dead",
+        "never forgive",
+        "suicidal"
+      ],
+      "examples": [
+        {
+          "text": "Even talking about a shared future is the end of our community; it would be suicidal to consider it.",
+          "span": "the end of our community",
+          "note": "Frames mere discussion as an existential threat to deter any engagement with the alternative."
+        },
+        {
+          "text": "To listen to their version is to betray our dead, and there is no future down that road.",
+          "span": "betray our dead",
+          "note": "Uses fear and taboo so the alternative is sealed off from elaboration."
+        }
+      ],
+      "promoters": [
+        "contextualisation",
+        "corroboration"
+      ],
+      "source": "Gillespie (2008); Avraamidou & Psaltis (2019)",
+      "activities": {
+        "6-9": "Brave-question time: it is safe to ask questions and wonder; practise saying 'I would like to find out more' about something unfamiliar.",
+        "10-13": "Separate the feeling from the fact: students name the fear in the post, then list one thing they could safely check or ask about.",
+        "14-17": "Examine the taboo: what makes this topic 'forbidden', and does discussing it actually cause the harm claimed? Test with a counter-example.",
+        "18+": "Analyse the prohibition as a promoter sign (Valsiner); design a safe deliberative format that lets the alternative be examined without threat."
+      },
+      "review": "pending"
+    },
+    "stigma": {
+      "label": "Stigma",
+      "definition": "Stereotyping or demeaning the people who hold the alternative view so that their position becomes socially unacceptable and ingroup members fear losing standing if they engage with it.",
+      "markers": [
+        "traitor",
+        "naive",
+        "ignorant",
+        "sell-out",
+        "enemy within",
+        "useful idiot",
+        "brainwashed",
+        "not a real"
+      ],
+      "examples": [
+        {
+          "text": "Anyone who wants to cooperate with them is a naive sell-out and not a real patriot.",
+          "span": "naive sell-out",
+          "note": "Demeans members of one's own group who engage the alternative, enforcing conformity through shame."
+        },
+        {
+          "text": "People who attend those joint events are just brainwashed traitors.",
+          "span": "brainwashed traitors",
+          "note": "Stigmatises participants so others avoid even being seen near the alternative view."
+        }
+      ],
+      "promoters": [
+        "outgroup_empathy",
+        "condemnation_of_harm_regardless_of_perpetrator"
+      ],
+      "source": "Gillespie (2008); Sammut & Sartawi (2012)",
+      "activities": {
+        "6-9": "Kind-words swap: notice a name that puts someone down and practise describing the person by what they actually did instead.",
+        "10-13": "Name-the-move: students identify the put-down in the post and rewrite the sentence describing the person fairly.",
+        "14-17": "Discuss the social cost: how does the slur police the ingroup? Role-play standing up for a fair description without endorsing any harm.",
+        "18+": "Analyse stigma as a structure of recognition within the ingroup; draft a response that condemns real harm while refusing the dehumanising label."
+      },
+      "review": "pending"
+    },
+    "undermining_motive": {
+      "label": "Undermining the motive of the author",
+      "definition": "Attributing self-interested or hidden motives to whoever holds the alternative view, providing a ready ad hominem reason to dismiss what they say without engaging its substance.",
+      "markers": [
+        "paid by",
+        "working for",
+        "corrupt",
+        "personal gain",
+        "hidden agenda",
+        "they only want",
+        "in it for the money",
+        "follow the money"
+      ],
+      "examples": [
+        {
+          "text": "The researchers behind that report are just paid by outside donors with a hidden agenda.",
+          "span": "paid by outside donors with a hidden agenda",
+          "note": "Dismisses the content by impugning motives rather than weighing the evidence."
+        },
+        {
+          "text": "Of course they call for dialogue, they only want the funding that comes with it.",
+          "span": "they only want the funding",
+          "note": "Provides a widely applicable ad hominem to discount the alternative."
+        }
+      ],
+      "promoters": [
+        "corroboration",
+        "outgroup_empathy"
+      ],
+      "source": "Moscovici (1961/2008); Gillespie (2008)",
+      "activities": {
+        "6-9": "Check-it game: when someone says 'they only said that to be mean', practise asking 'how could we find out if it is true?'",
+        "10-13": "Argument vs author: students separate the claim from the attack on the speaker, then judge the claim on its own.",
+        "14-17": "Spot the ad hominem: identify the motive attack, then evaluate the underlying claim using an independent source.",
+        "18+": "Distinguish legitimate interest disclosure from motive-poisoning; corroborate the claim through third sources and weigh it on the merits."
+      },
+      "review": "pending"
+    },
+    "distrust": {
+      "label": "Distrust",
+      "definition": "Dismissing the alternative on the basis of categorical, history-laden distrust of its source group, so that engaging the other side at all is framed as naive or foolish.",
+      "markers": [
+        "cannot trust",
+        "never trust",
+        "how can you trust",
+        "untrustworthy",
+        "history shows they",
+        "they always lie",
+        "fool me once"
+      ],
+      "examples": [
+        {
+          "text": "How can you trust anything they say? History shows they always go back on their word.",
+          "span": "How can you trust anything they say",
+          "note": "Generalises distrust to the whole source group, making engagement seem foolish."
+        },
+        {
+          "text": "Never trust the other side, it always ends the same way.",
+          "span": "Never trust the other side",
+          "note": "Categorical distrust forecloses any dialogue or verification."
+        }
+      ],
+      "promoters": [
+        "corroboration",
+        "contextualisation"
+      ],
+      "source": "Gillespie (2012); Avraamidou & Psaltis (2019); Psaltis (2012)",
+      "activities": {
+        "6-9": "Trust-step story: read about two children who slowly learn to trust by keeping small promises; what helped them?",
+        "10-13": "Evidence over reputation: students find one verifiable fact in the post and check it against another source before judging.",
+        "14-17": "Distinguish a specific broken promise from a blanket judgement of a whole group; discuss how trust can be rebuilt in steps.",
+        "18+": "Examine threat-based representations and non-dialogue (Avraamidou & Psaltis); design a corroboration protocol for contested claims."
+      },
+      "review": "pending"
+    },
+    "bracketing": {
+      "label": "Bracketing",
+      "definition": "Holding the alternative representation at a linguistic distance, through reported speech and hedging ('they claim', 'so-called'), through outright refusal to engage ('their version', 'nothing to discuss'), or through dismissal that prevents the alternative from ever being examined as a genuine view.",
+      "markers": [
+        "they claim",
+        "they say",
+        "so-called",
+        "allegedly",
+        "supposedly",
+        "they believe",
+        "claims to be",
+        "their version",
+        "nothing to discuss",
+        "not worth discussing",
+        "do not even discuss",
+        "don't even discuss",
+        "there is nothing to",
+        "no point discussing",
+        "refuse to discuss"
+      ],
+      "examples": [
+        {
+          "text": "Their so-called peace plan supposedly benefits everyone, or so they claim.",
+          "span": "so-called peace plan",
+          "note": "Triple bracketing holds the alternative in suspended disbelief without engaging it."
+        },
+        {
+          "text": "They say they want reconciliation, allegedly, but who really knows.",
+          "span": "allegedly",
+          "note": "Reported speech and hedging keep the alternative attributed to others and unreal."
+        },
+        {
+          "text": "Do not even discuss their version of history in class, there is nothing to discuss.",
+          "span": "their version of history",
+          "note": "Flags the alternative view as unworthy of examination, foreclosing engagement without engaging the content."
+        }
+      ],
+      "promoters": [
+        "contextualisation",
+        "recognising_ingroup_bias"
+      ],
+      "source": "Gillespie (2008)",
+      "activities": {
+        "6-9": "Tell-it-straight game: practise saying what someone actually wants in plain words instead of 'they say maybe sort of'.",
+        "10-13": "Un-bracket the sentence: students rewrite the post stating the other side's view directly, then notice how it reads differently.",
+        "14-17": "Hunt the hedges: highlight every distancing word and discuss what work each one does to keep the alternative unreal.",
+        "18+": "Analyse the bracketing as management of representational multiplicity; rewrite to engage the strongest version of the alternative."
+      },
+      "review": "pending"
+    }
+  }
+}

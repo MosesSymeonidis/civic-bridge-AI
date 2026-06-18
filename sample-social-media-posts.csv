@@ -1,0 +1,11 @@
+post_id,post_text,country,language,region_area,platform,published_at,source_reference
+sample-post-001,"Our neighborhood meeting welcomed new families and discussed language support for local services.",Cyprus,English,Nicosia,Facebook,2026-06-01T09:15:00Z,SAMPLE-001
+sample-post-002,"Students from different backgrounds worked together to organize a community clean-up.",Cyprus,English,Limassol,Instagram,2026-06-02T11:30:00Z,SAMPLE-002
+sample-post-003,"People from that community should not be allowed to use the public center.",Cyprus,English,Larnaca,X/Twitter,2026-06-03T13:45:00Z,SAMPLE-003
+sample-post-004,"The council should provide translated information so every resident can participate.",Cyprus,English,Paphos,LinkedIn,2026-06-04T08:20:00Z,SAMPLE-004
+sample-post-005,"I disagree with their beliefs, but everyone deserves safety and equal treatment.",Cyprus,English,Famagusta,Facebook,2026-06-05T16:10:00Z,SAMPLE-005
+sample-post-006,"Those outsiders are responsible for every problem in our town and should leave.",Cyprus,English,Kyrenia,TikTok,2026-06-06T18:05:00Z,SAMPLE-006
+sample-post-007,"A public workshop helped residents challenge stereotypes and listen to one another.",Cyprus,English,Nicosia,YouTube,2026-06-07T10:40:00Z,SAMPLE-007
+sample-post-008,"Do not hire people from that group because they cannot be trusted.",Cyprus,English,Limassol,X/Twitter,2026-06-08T14:25:00Z,SAMPLE-008
+sample-post-009,"Local volunteers created a support network for anyone experiencing discrimination.",Cyprus,English,Larnaca,Instagram,2026-06-09T12:00:00Z,SAMPLE-009
+sample-post-010,"We need a calm discussion about the incident without blaming an entire community.",Cyprus,English,Paphos,Reddit,2026-06-10T17:35:00Z,SAMPLE-010

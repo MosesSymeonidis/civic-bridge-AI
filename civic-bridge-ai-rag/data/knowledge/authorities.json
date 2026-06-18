@@ -1,0 +1,757 @@
+{
+  "Albania": {
+    "country": "Albania",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Andorra": {
+    "country": "Andorra",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Armenia": {
+    "country": "Armenia",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Austria": {
+    "country": "Austria",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Azerbaijan": {
+    "country": "Azerbaijan",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Belgium": {
+    "country": "Belgium",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Bosnia and Herzegovina": {
+    "country": "Bosnia and Herzegovina",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Bulgaria": {
+    "country": "Bulgaria",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Croatia": {
+    "country": "Croatia",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Cyprus": {
+    "country": "Cyprus",
+    "police_cybercrime": {
+      "name": "Cyprus Police - Office for Combating Cybercrime",
+      "url": "https://www.police.gov.cy/police/police.nsf/dmlcybercrime_en/dmlcybercrime_en",
+      "phone": "+357 22 808200"
+    },
+    "equality_body": {
+      "name": "Commissioner for Administration and the Protection of Human Rights (Ombudsman) - Equality Body",
+      "url": "http://www.ombudsman.gov.cy"
+    },
+    "hotlines": [
+      {
+        "name": "CYberSafety Hotline (illegal online content)",
+        "url": "https://www.cybersafety.cy",
+        "phone": "1480"
+      }
+    ],
+    "helplines": [
+      {
+        "name": "European Child Helpline (Hope for Children)",
+        "phone": "116 111",
+        "audience": "children and teens"
+      },
+      {
+        "name": "CYberSafety Helpline",
+        "phone": "1480",
+        "audience": "children, parents, educators"
+      }
+    ],
+    "report_urls": [
+      "https://www.cybersafety.cy/report"
+    ],
+    "verified": true
+  },
+  "Czech Republic": {
+    "country": "Czech Republic",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Denmark": {
+    "country": "Denmark",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Estonia": {
+    "country": "Estonia",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Finland": {
+    "country": "Finland",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "France": {
+    "country": "France",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Georgia": {
+    "country": "Georgia",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Germany": {
+    "country": "Germany",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Greece": {
+    "country": "Greece",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Hungary": {
+    "country": "Hungary",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Iceland": {
+    "country": "Iceland",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Ireland": {
+    "country": "Ireland",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Italy": {
+    "country": "Italy",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Latvia": {
+    "country": "Latvia",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Liechtenstein": {
+    "country": "Liechtenstein",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Lithuania": {
+    "country": "Lithuania",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Luxembourg": {
+    "country": "Luxembourg",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Malta": {
+    "country": "Malta",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Republic of Moldova": {
+    "country": "Republic of Moldova",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Monaco": {
+    "country": "Monaco",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Montenegro": {
+    "country": "Montenegro",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Netherlands": {
+    "country": "Netherlands",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "North Macedonia": {
+    "country": "North Macedonia",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Norway": {
+    "country": "Norway",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Poland": {
+    "country": "Poland",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Portugal": {
+    "country": "Portugal",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Romania": {
+    "country": "Romania",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "San Marino": {
+    "country": "San Marino",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Serbia": {
+    "country": "Serbia",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Slovak Republic": {
+    "country": "Slovak Republic",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Slovenia": {
+    "country": "Slovenia",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Spain": {
+    "country": "Spain",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Sweden": {
+    "country": "Sweden",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Switzerland": {
+    "country": "Switzerland",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Türkiye": {
+    "country": "Türkiye",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "Ukraine": {
+    "country": "Ukraine",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  },
+  "United Kingdom": {
+    "country": "United Kingdom",
+    "police_cybercrime": {
+      "name": "",
+      "url": "",
+      "phone": ""
+    },
+    "equality_body": {
+      "name": "",
+      "url": ""
+    },
+    "hotlines": [],
+    "helplines": [],
+    "report_urls": [],
+    "verified": false
+  }
+}

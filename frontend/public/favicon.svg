@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <circle cx="50" cy="50" r="47" fill="#184f3e"/>
+  <path
+    d="M29 68V33M71 68V33M18 68H82"
+    fill="none"
+    stroke="#f4f2eb"
+    stroke-linecap="round"
+    stroke-width="8"
+  />
+  <path
+    d="M29 39C39 39 40 58 50 58S61 39 71 39"
+    fill="none"
+    stroke="#e96d4e"
+    stroke-linecap="round"
+    stroke-width="5"
+  />
+  <path
+    d="M42 53V68M58 53V68"
+    fill="none"
+    stroke="#f4f2eb"
+    stroke-linecap="round"
+    stroke-width="4"
+  />
+</svg>

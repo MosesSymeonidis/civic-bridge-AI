@@ -1,0 +1,23 @@
+name: civic-bridge-ai-local
+
+services:
+  postgres:
+    environment:
+      POSTGRES_DB: "${LOCAL_POSTGRES_DB:-civic_bridge_ai}"
+      POSTGRES_USER: "${LOCAL_POSTGRES_USER:-civic_bridge}"
+      POSTGRES_PASSWORD: "${LOCAL_POSTGRES_PASSWORD:-civic_bridge}"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${LOCAL_POSTGRES_USER:-civic_bridge} -d ${LOCAL_POSTGRES_DB:-civic_bridge_ai}",
+        ]
+
+  backend:
+    environment:
+      DATABASE_URL: "postgresql+psycopg://${LOCAL_POSTGRES_USER:-civic_bridge}:${LOCAL_POSTGRES_PASSWORD:-civic_bridge}@postgres:5432/${LOCAL_POSTGRES_DB:-civic_bridge_ai}"
+
+volumes:
+  postgres_data:

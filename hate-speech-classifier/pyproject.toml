@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "hate-speech-semantic-clustering"
+version = "0.1.0"
+description = "A reproducible HateXplain and BERTopic semantic clustering pipeline."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "bertopic==0.17.4",
+    "fastapi>=0.115,<1",
+    "joblib>=1.3",
+    "pandas>=1.5",
+    "scikit-learn>=1.2",
+    "sentence-transformers>=3.0",
+    "uvicorn>=0.30,<1",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0"]
+
+[project.scripts]
+prepare-hatexplain = "hate_speech_clustering.prepare:main"
+cluster-hatexplain = "hate_speech_clustering.cluster:main"
+predict-cluster = "hate_speech_clustering.predict:main"
+label-clusters = "hate_speech_clustering.label_model:main"
+build-cluster-projection = "hate_speech_clustering.projection:main"
+serve-cluster-api = "hate_speech_clustering.api:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]

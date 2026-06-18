@@ -1,0 +1,12 @@
+.env
+.venv
+__pycache__
+*.py[cod]
+.pytest_cache
+app/static
+data/raw
+data/reports.db
+ingest
+semantic-barriers
+tests
+rehearse.py

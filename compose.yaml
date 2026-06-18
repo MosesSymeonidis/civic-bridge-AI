@@ -1,0 +1,123 @@
+services:
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_DB: "${POSTGRES_DB:-civic_bridge_ai}"
+      POSTGRES_USER: "${POSTGRES_USER:-civic_bridge}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:-civic_bridge}"
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U ${POSTGRES_USER:-civic_bridge} -d ${POSTGRES_DB:-civic_bridge_ai}",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 5s
+    restart: unless-stopped
+
+  backend:
+    image: civic-bridge-ai-backend:local
+    build:
+      context: ./backend
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: "postgresql+psycopg://${POSTGRES_USER:-civic_bridge}:${POSTGRES_PASSWORD:-civic_bridge}@postgres:5432/${POSTGRES_DB:-civic_bridge_ai}"
+      SEED_DEMO_DATA: "${SEED_DEMO_DATA:-false}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:${BACKEND_PORT:-8000}:8000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/v1/health')",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped
+
+  rag-api:
+    image: civic-bridge-ai-rag-api:local
+    build:
+      context: ./civic-bridge-ai-rag
+    env_file:
+      - .env
+    environment:
+      OPENAI_API_KEY: "${OPENAI_API_KEY}"
+    ports:
+      - "127.0.0.1:${RAG_API_PORT:-8001}:8000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/healthz')",
+        ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  hate-speech-classifier:
+    image: civic-bridge-ai-hate-speech-classifier:local
+    build:
+      context: ./hate-speech-classifier
+    environment:
+      HSC_ARTIFACT_DIR: /app/artifacts/bertopic-full
+      HSC_MIN_CONFIDENCE: "${HSC_MIN_CONFIDENCE:-0.25}"
+    ports:
+      - "127.0.0.1:${HATE_SPEECH_CLASSIFIER_PORT:-8002}:8000"
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "python",
+          "-c",
+          "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    restart: unless-stopped
+
+  frontend:
+    image: civic-bridge-ai-frontend:local
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: "${VITE_API_BASE_URL:-/api/v1}"
+        VITE_RAG_API_BASE_URL: "${VITE_RAG_API_BASE_URL:-/rag-api}"
+        VITE_CLASSIFIER_API_BASE_URL: "${VITE_CLASSIFIER_API_BASE_URL:-/classifier-api}"
+        VITE_SOCIAL_POST_PAGE_URL: "${VITE_SOCIAL_POST_PAGE_URL:-http://localhost:3000/how-it-works}"
+    depends_on:
+      backend:
+        condition: service_healthy
+      rag-api:
+        condition: service_healthy
+      hate-speech-classifier:
+        condition: service_healthy
+    ports:
+      - "${FRONTEND_PORT:-3000}:80"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "-", "http://127.0.0.1/healthz"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 5s
+    restart: unless-stopped

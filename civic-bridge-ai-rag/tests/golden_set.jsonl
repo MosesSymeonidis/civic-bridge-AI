@@ -1,0 +1,10 @@
+{"id": "g01", "text": "I think the government's migration policy is wrong and we should debate it in parliament.", "tier_min": 1, "tier_max": 1, "barriers": []}
+{"id": "g02", "text": "Politicians are all liars and idiots, every single one of them.", "tier_min": 1, "tier_max": 2, "barriers": []}
+{"id": "g03", "text": "These people will never change, it is in their nature. You cannot trust a single one.", "tier_min": 2, "tier_max": 3, "barriers": ["rigid_opposition", "distrust"]}
+{"id": "g04", "text": "Anyone who talks to the other community is a traitor and a sell-out.", "tier_min": 2, "tier_max": 3, "barriers": ["stigma"]}
+{"id": "g05", "text": "Migrants are flooding our schools and bringing disease. They do not belong here.", "tier_min": 3, "tier_max": 4, "barriers": ["transfer_of_meaning"]}
+{"id": "g06", "text": "If we let them build their place of worship here it will be the end of our village, a catastrophe.", "tier_min": 2, "tier_max": 3, "barriers": ["prohibited_thoughts"]}
+{"id": "g07", "text": "Of course the journalist defends them, she is paid by foreign masters to write this.", "tier_min": 2, "tier_max": 3, "barriers": ["undermining_motive", "transfer_of_meaning"]}
+{"id": "g08", "text": "They are vermin and should be driven out of our neighbourhoods once and for all.", "tier_min": 4, "tier_max": 4, "barriers": []}
+{"id": "g09", "text": "I saw a rude joke about my town's football team and people are angry.", "tier_min": 1, "tier_max": 2, "barriers": []}
+{"id": "g10", "text": "Do not even discuss their version of history in class, there is nothing to discuss.", "tier_min": 2, "tier_max": 3, "barriers": ["bracketing"]}

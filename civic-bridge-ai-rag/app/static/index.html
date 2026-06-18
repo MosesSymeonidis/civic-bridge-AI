@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="/logo.png">
+<title>Civic Bridge AI</title>
+<style>
+  :root { font-family: system-ui, sans-serif; }
+  body { margin: 0 auto; max-width: 760px; padding: 16px; background: #f7f8fa; color: #1d2733; }
+  header { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+  select, button, textarea, input { font: inherit; padding: 8px; border-radius: 8px; border: 1px solid #cfd6df; }
+  #log { background: #fff; border: 1px solid #e3e8ee; border-radius: 12px; padding: 16px; min-height: 320px; max-height: 60vh; overflow-y: auto; }
+  .msg { margin: 10px 0; line-height: 1.45; white-space: pre-wrap; }
+  .user { color: #0b4f8a; font-weight: 600; }
+  .bot { color: #1d2733; }
+  .triage { background: #fff7e6; border-left: 4px solid #e6a700; padding: 10px; border-radius: 6px; }
+  .card { background: #f0f4f8; border-radius: 8px; padding: 10px; margin: 6px 0; font-size: 0.92em; }
+  .card summary { cursor: pointer; font-weight: 600; }
+  .card-content { margin-top: 8px; }
+  .tier { display: inline-block; padding: 2px 10px; border-radius: 999px; color: #fff; font-weight: 600; }
+  .t1 { background: #3a7d44; } .t2 { background: #b08900; }
+  .t3 { background: #c2571a; } .t4 { background: #a02828; }
+  footer { display: flex; gap: 8px; margin-top: 12px; flex-direction: column; }
+  .row { display: flex; gap: 8px; }
+  #message { flex: 1; resize: vertical; }
+  #ageLabel { font-size: 0.85em; color: #5a6b7d; }
+  .cite { font-size: 0.85em; color: #5a6b7d; }
+  .page-footer { margin-top: 18px; font-size: 0.82em; color: #7a8b9a; text-align: center; }
+  button:disabled { opacity: 0.55; cursor: not-allowed; }
+</style>
+</head>
+<body>
+<header>
+  <img src="/logo.png" alt="Civic Bridge AI" style="height:44px;display:block;margin:-6px 0">
+  <select id="role"><option>student</option><option>teacher</option></select>
+  <label id="ageLabel" for="age">your age</label>
+  <select id="age"><option>6-9</option><option>10-13</option><option selected>14-17</option><option>18+</option></select>
+  <select id="country">
+    <option selected>Cyprus</option>
+    <option>Greece</option>
+    <option>Germany</option>
+    <option>France</option>
+  </select>
+</header>
+<div id="log"></div>
+<footer>
+  <div class="row">
+    <textarea id="message" rows="2"
+      placeholder="Ask a question, describe what you saw, or paste a post (quotes help, but are not required)"></textarea>
+    <button id="send">Send</button>
+  </div>
+</footer>
+<p class="page-footer">Risk signals for human review. This tool never makes legal determinations.
+  &nbsp;&middot;&nbsp; <a href="/how-it-works.html">How it works</a>
+  &nbsp;&middot;&nbsp; <a href="/dashboard.html">Awareness dashboard</a></p>
+<script>
+const sid = "web-" + Math.random().toString(36).slice(2);
+const log = document.getElementById("log");
+const sendBtn = document.getElementById("send");
+
+function add(html, cls) {
+  const div = document.createElement("div");
+  div.className = "msg " + cls;
+  div.innerHTML = html;
+  log.appendChild(div);
+  log.scrollTop = log.scrollHeight;
+}
+
+function esc(s) {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function truncate(s, max) {
+  if (!s) return "";
+  return s.length > max ? s.slice(0, max) + "..." : s;
+}
+
+// Minimal markdown for bot replies. Escapes HTML FIRST, then formats, so
+// nothing in the model output can inject markup.
+function md(s, citations = []) {
+  let h = esc(s);
+  const citationByLabel = {};
+  citations.forEach((citation, i) => {
+    citationByLabel[`S${i + 1}`] = citation;
+  });
+  h = h.replace(/^#{1,4} (.*)$/gm, "<strong>$1</strong>");
+  h = h.replace(/^\s*[-*]{3,}\s*$/gm, "");
+  h = h.replace(/\*\*([^*\n]+)\*\*/g, "<strong>$1</strong>");
+  h = h.replace(/(^|[\s(])\*([^*\n]+)\*(?=[\s).,;:!?]|$)/g, "$1<em>$2</em>");
+  h = h.replace(/^\s*[-*] (.*)$/gm, "&bull; $1");
+  h = h.replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g,
+    '<a href="$2" target="_blank" rel="noopener">$1</a>');
+  h = h.replace(/(^|[\s(])((?:https?:\/\/)[^\s<)]+)(?=[\s).,;:!?]|$)/g,
+    '$1<a href="$2" target="_blank" rel="noopener">$2</a>');
+  h = h.replace(/\[(S\d+)\]/g, (match, label) => {
+    const citation = citationByLabel[label];
+    if (!citation || !citation.url) return match;
+    return `<a href="${esc(citation.url)}" target="_blank" rel="noopener">[${label}]</a>`;
+  });
+  h = h.replace(/\n{3,}/g, "\n\n");
+  return h;
+}
+
+function caseHtml(c) {
+  const label = esc(c.name);
+  if (!c.url) return label;
+  return `<a href="${esc(c.url)}" target="_blank" rel="noopener">${label}</a>`;
+}
+
+function analysisCard(a) {
+  if (!a) return "";
+  let html = `<details class="card"><summary><span class="tier t${a.tier}">Tier ${a.tier}</span> ${esc(a.tier_label)}</summary><div class="card-content">`;
+  html += `<em>For human review, not a legal determination.</em>`;
+  for (const b of a.barriers) {
+    html += `<br><b>${esc(b.id)}</b>: "${esc(b.span)}" (${esc(b.rationale)})`;
+    html += `<br>&nbsp;&nbsp;promoters: ${b.promoters.map(esc).join(", ")}`;
+  }
+  for (const c of a.related_cases || []) {
+    html += `<br>ECtHR: ${caseHtml(c)} (${esc(truncate(c.conclusion || "", 120))})`;
+  }
+  return html + "</div></details>";
+}
+
+function contactLine(label, name, url, detail) {
+  if (!name && !url && !detail) return "";
+  const linkedName = url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${esc(name || url)}</a>` : esc(name || "");
+  return `<br><b>${esc(label)}:</b> ${linkedName}${detail ? " " + esc(detail) : ""}`;
+}
+
+function reportingCard(r) {
+  if (!r) return "";
+  let html = `<details class="card"><summary>${esc(r.country)} support and reporting contacts</summary><div class="card-content">`;
+  const police = r.police_cybercrime || {};
+  html += contactLine("Police/cybercrime", police.name, police.url, police.phone);
+  const equality = r.equality_body || {};
+  html += contactLine("Equality body", equality.name, equality.url, "");
+  for (const h of r.hotlines || []) {
+    html += contactLine("Hotline", h.name, h.url, h.phone);
+  }
+  for (const h of r.helplines || []) {
+    const detail = [h.phone, h.audience].filter(Boolean).join(" ");
+    html += contactLine("Helpline", h.name, "", detail);
+  }
+  for (const url of r.report_urls || []) {
+    html += contactLine("Report URL", url, url, "");
+  }
+  return html + "</div></details>";
+}
+
+function citationHtml(c, i) {
+  const label = `[S${i + 1}] ${esc(c.source)} p.${c.page}`;
+  if (!c.url) return label;
+  return `<a href="${esc(c.url)}" target="_blank" rel="noopener">${label}</a>`;
+}
+
+function sourcesDetails(citations) {
+  if (!citations || !citations.length) return "";
+  return `<details class="cite"><summary>Sources (${citations.length})</summary>` +
+    citations.map(citationHtml).join("; ") + `</details>`;
+}
+
+async function send() {
+  const message = document.getElementById("message").value.trim();
+  if (!message) return;
+  add(esc(message), "user");
+  document.getElementById("message").value = "";
+  add("...", "bot");
+  sendBtn.disabled = true;
+  const body = {
+    session_id: sid,
+    role: document.getElementById("role").value,
+    age_band: document.getElementById("age").value,
+    country: document.getElementById("country").value,
+    message
+  };
+  try {
+    const resp = await fetch("/chat", {method: "POST",
+      headers: {"Content-Type": "application/json"}, body: JSON.stringify(body)});
+    const data = await resp.json();
+    log.lastChild.remove();
+    if (data.analysis || data.reporting) {
+      add(analysisCard(data.analysis) + reportingCard(data.reporting), "bot");
+    }
+    let html = md(data.reply, data.citations || []);
+    if (data.triage) html = `<div class="triage">${html}</div>`;
+    html += sourcesDetails(data.citations);
+    add(html, "bot");
+  } catch (e) {
+    log.lastChild.remove();
+    add("Service error: " + esc(String(e)), "bot");
+  } finally {
+    sendBtn.disabled = false;
+  }
+}
+document.getElementById("send").onclick = send;
+// Enter sends; Shift+Enter inserts a newline (the box accepts multiline pastes).
+document.getElementById("message").addEventListener("keydown",
+  e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } });
+
+const roleSel = document.getElementById("role");
+const ageLabel = document.getElementById("ageLabel");
+function updateAgeLabel() {
+  ageLabel.textContent = roleSel.value === "teacher" ? "class age" : "your age";
+}
+roleSel.addEventListener("change", updateAgeLabel);
+updateAgeLabel();
+</script>
+</body>
+</html>

@@ -1,0 +1,233 @@
+version: 1
+# Curated legal/normative passages that ground the severity classifier.
+# Every `text:` field is verified against the source PDFs in data/raw/legal/.
+# review: approved-verbatim = quoted verbatim from the source (light elision with
+# "..." only, no paraphrase); review: pending = condensed/summarised, awaiting a
+# human legal advisor's check.
+#
+# The 4 tiers below are the PROJECT's own labels (from the hackathon application),
+# inspired by CM/Rec(2022)16's graduated approach. They are NOT Council of Europe
+# text. The passages are what ground them legally.
+tiers:
+  1: ordinary political expression
+  2: offensive or harmful expression
+  3: potential hate speech for human review
+  4: high-severity incitement/dehumanisation risk
+passages:
+  # ----------------------------------------------------------------------------
+  # CM/Rec(2022)16 — Committee of Ministers Recommendation on combating hate speech
+  # ----------------------------------------------------------------------------
+  - id: cmrec2022-16:def
+    source: CM/Rec(2022)16, Appendix, para 2
+    tags: [definition]
+    review: approved-verbatim
+    text: >-
+      For the purposes of this recommendation, hate speech is understood as all
+      types of expression that incite, promote, spread or justify violence,
+      hatred or discrimination against a person or group of persons, or that
+      denigrates them, by reason of their real or attributed personal
+      characteristics or status such as "race", colour, language, religion,
+      nationality, national or ethnic origin, age, disability, sex, gender
+      identity and sexual orientation.
+
+  - id: cmrec2022-16:factors
+    source: CM/Rec(2022)16, Appendix, para 4
+    tags: [severity]
+    review: approved-verbatim
+    text: >-
+      In assessing the severity of hate speech and determining which type of
+      liability, if any, should be attributed to any specific expression,
+      member States' authorities and other stakeholders should, following the
+      guidance provided by the relevant case law of the Court, take into account
+      the following factors and the interplay between them: the content of the
+      expression; the political and social context at the time of the
+      expression; the intent of the speaker; the speaker's role and status in
+      society; how the expression is disseminated or amplified; the capacity of
+      the expression to lead to harmful consequences, including the imminence of
+      such consequences; the nature and size of the audience, and the
+      characteristics of the targeted group.
+
+  - id: cmrec2022-16:graduated
+    source: CM/Rec(2022)16, Appendix, paras 3 and 7
+    tags: [graduated, severity]
+    review: pending  # lightly recomposed (enumeration/title join); verify against paper source
+    text: >-
+      Such a comprehensive approach ... should differentiate between: (a) hate
+      speech that is prohibited under criminal law; and hate speech that does
+      not attain the level of severity required for criminal liability, but is
+      nevertheless subject to civil or administrative law; and (b) offensive or
+      harmful types of expression which are not sufficiently severe to be
+      legitimately restricted under the European Convention on Human Rights, but
+      nevertheless call for alternative responses ... such as: counter-speech
+      and other countermeasures; measures fostering intercultural dialogue and
+      understanding ... and relevant educational, information-sharing and
+      awareness-raising activities. ... Criminal law should only be applied as a
+      last resort and for the most serious expressions of hatred.
+
+  - id: cmrec2022-16:edu
+    source: CM/Rec(2022)16, Appendix, paras 45 and 47
+    tags: [education]
+    review: approved-verbatim
+    text: >-
+      As part of their comprehensive approach to preventing and combating hate
+      speech, member States should take a range of concrete measures to promote
+      awareness raising, education, training, counter-speech, alternative speech
+      and intercultural dialogue, in accordance with their experience and
+      knowledge. ... Member States should ensure that human rights education,
+      education for democratic citizenship and media and information literacy,
+      all of which should address offline and online hate speech, are part of
+      the general education curriculum.
+
+  - id: cmrec2022-16:foe
+    source: CM/Rec(2022)16, Appendix, para 9
+    tags: [foe]
+    review: approved-verbatim
+    text: >-
+      Member States should establish effective legal and practical safeguards
+      against any misuse or abuse of hate speech legislation, in particular for
+      the purpose of inhibiting public debate and silencing critical voices,
+      political opponents or persons belonging to minorities.
+
+  # ----------------------------------------------------------------------------
+  # European Convention on Human Rights (ECHR) + Court case law
+  # ----------------------------------------------------------------------------
+  - id: echr:art10.1
+    source: ECHR, Article 10, paragraph 1
+    tags: [art10]
+    review: approved-verbatim
+    text: >-
+      Everyone has the right to freedom of expression. This right shall include
+      freedom to hold opinions and to receive and impart information and ideas
+      without interference by public authority and regardless of frontiers.
+      This Article shall not prevent States from requiring the licensing of
+      broadcasting, television or cinema enterprises.
+
+  - id: echr:art10.2
+    source: ECHR, Article 10, paragraph 2
+    tags: [art10]
+    review: approved-verbatim
+    text: >-
+      The exercise of these freedoms, since it carries with it duties and
+      responsibilities, may be subject to such formalities, conditions,
+      restrictions or penalties as are prescribed by law and are necessary in a
+      democratic society, in the interests of national security, territorial
+      integrity or public safety, for the prevention of disorder or crime, for
+      the protection of health or morals, for the protection of the reputation
+      or rights of others, for preventing the disclosure of information received
+      in confidence, or for maintaining the authority and impartiality of the
+      judiciary.
+
+  - id: echr:offend-shock-disturb
+    source: >-
+      Handyside v. United Kingdom (ECtHR), as recalled in CM/Rec(2022)16,
+      Preamble
+    tags: [art10]
+    review: approved-verbatim
+    text: >-
+      Freedom of expression is applicable not only to information or ideas that
+      are favourably received or regarded as inoffensive or as a matter of
+      indifference, but also to those that offend, shock or disturb the State or
+      any sector of the population.
+
+  - id: echr:art17
+    source: ECHR, Article 17 (prohibition of abuse of rights)
+    tags: [art17]
+    review: approved-verbatim
+    text: >-
+      Nothing in this Convention may be interpreted as implying for any State,
+      group or person any right to engage in any activity or perform any act
+      aimed at the destruction of any of the rights and freedoms set forth
+      herein or at their limitation to a greater extent than is provided for in
+      the Convention.
+
+  # ----------------------------------------------------------------------------
+  # CETS 189 — Additional Protocol to the Convention on Cybercrime
+  # (racist and xenophobic acts committed through computer systems)
+  # ----------------------------------------------------------------------------
+  - id: cets189:art3
+    source: CETS 189, Article 3, paragraph 1
+    tags: [criminal]
+    review: pending  # lightly recomposed (enumeration/title join); verify against paper source
+    text: >-
+      Dissemination of racist and xenophobic material through computer systems.
+      Each Party shall adopt such legislative and other measures as may be
+      necessary to establish as criminal offences under its domestic law, when
+      committed intentionally and without right, the following conduct:
+      distributing, or otherwise making available, racist and xenophobic
+      material to the public through a computer system.
+
+  - id: cets189:art4
+    source: CETS 189, Article 4, paragraph 1
+    tags: [criminal]
+    review: pending  # lightly recomposed (enumeration/title join); verify against paper source
+    text: >-
+      Racist and xenophobic motivated threat. Each Party shall adopt such
+      legislative and other measures as may be necessary to establish as
+      criminal offences under its domestic law, when committed intentionally and
+      without right, the following conduct: threatening, through a computer
+      system, with the commission of a serious criminal offence as defined under
+      its domestic law, (i) persons for the reason that they belong to a group,
+      distinguished by race, colour, descent or national or ethnic origin, as
+      well as religion, if used as a pretext for any of these factors, or (ii) a
+      group of persons which is distinguished by any of these characteristics.
+
+  - id: cets189:art5
+    source: CETS 189, Article 5, paragraph 1
+    tags: [criminal]
+    review: pending  # lightly recomposed (enumeration/title join); verify against paper source
+    text: >-
+      Racist and xenophobic motivated insult. Each Party shall adopt such
+      legislative and other measures as may be necessary to establish as
+      criminal offences under its domestic law, when committed intentionally and
+      without right, the following conduct: insulting publicly, through a
+      computer system, (i) persons for the reason that they belong to a group
+      distinguished by race, colour, descent or national or ethnic origin, as
+      well as religion, if used as a pretext for any of these factors; or (ii) a
+      group of persons which is distinguished by any of these characteristics.
+
+  - id: cets189:art6
+    source: CETS 189, Article 6, paragraph 1
+    tags: [criminal]
+    review: pending  # lightly recomposed (enumeration/title join); verify against paper source
+    text: >-
+      Denial, gross minimisation, approval or justification of genocide or
+      crimes against humanity. Each Party shall adopt such legislative measures
+      as may be necessary to establish the following conduct as criminal
+      offences under its domestic law, when committed intentionally and without
+      right: distributing or otherwise making available, through a computer
+      system to the public, material which denies, grossly minimises, approves
+      or justifies acts constituting genocide or crimes against humanity, as
+      defined by international law and recognised as such by final and binding
+      decisions of the International Military Tribunal ... or of any other
+      international court established by relevant international instruments and
+      whose jurisdiction is recognised by that Party.
+
+  # ----------------------------------------------------------------------------
+  # CETS 225 — Framework Convention on Artificial Intelligence (system-level)
+  # Grounds the platform's own safeguards, not per-post severity. Tagged `system`
+  # so norms_block() excludes them from the classification prompt by default.
+  # ----------------------------------------------------------------------------
+  - id: cets225:transparency
+    source: CETS 225, Article 8 (Transparency and oversight)
+    tags: [system]
+    review: approved-verbatim
+    text: >-
+      Each Party shall adopt or maintain measures to ensure that adequate
+      transparency and oversight requirements tailored to the specific contexts
+      and risks are in place in respect of activities within the lifecycle of
+      artificial intelligence systems, including with regard to the
+      identification of content generated by artificial intelligence systems.
+
+  - id: cets225:oversight
+    source: CETS 225, Article 15 (Procedural safeguards)
+    tags: [system]
+    review: approved-verbatim
+    text: >-
+      Each Party shall ensure that, where an artificial intelligence system
+      significantly impacts upon the enjoyment of human rights, effective
+      procedural guarantees, safeguards and rights, in accordance with the
+      applicable international and domestic law, are available to persons
+      affected thereby. ... Each Party shall seek to ensure that, as appropriate
+      for the context, persons interacting with artificial intelligence systems
+      are notified that they are interacting with such systems rather than with
+      a human.

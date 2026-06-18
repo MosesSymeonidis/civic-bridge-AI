@@ -1,0 +1,859 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="/logo.png">
+<title>How Civic Bridge AI Works</title>
+<style>
+  :root {
+    color-scheme: light;
+    --ink: #182230;
+    --muted: #566579;
+    --line: #dce5ee;
+    --paper: #ffffff;
+    --wash: #f5f8fb;
+    --blue: #1f6f9f;
+    --green: #2f7a55;
+    --amber: #b26b16;
+    --red: #a33b3b;
+    --violet: #5d5a9f;
+    --shadow: 0 18px 50px rgba(24, 34, 48, 0.10);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    color: var(--ink);
+    background: var(--wash);
+    line-height: 1.55;
+  }
+  a { color: var(--blue); }
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    padding: 14px clamp(18px, 4vw, 56px);
+    background: rgba(255, 255, 255, 0.92);
+    border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(12px);
+  }
+  .brand { font-weight: 750; letter-spacing: 0; }
+  .nav {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    font-size: 0.92rem;
+  }
+  .nav a { color: var(--muted); text-decoration: none; }
+  .nav a:hover { color: var(--ink); }
+  main { overflow: hidden; }
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.02fr) minmax(320px, 0.98fr);
+    gap: clamp(28px, 5vw, 70px);
+    min-height: 86vh;
+    align-items: center;
+    padding: clamp(46px, 8vw, 96px) clamp(18px, 5vw, 72px) clamp(34px, 5vw, 58px);
+    background:
+      linear-gradient(135deg, rgba(31,111,159,0.12), rgba(47,122,85,0.09) 42%, rgba(178,107,22,0.10)),
+      #f8fbfd;
+  }
+  .eyebrow {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    padding: 6px 10px;
+    border: 1px solid rgba(31, 111, 159, 0.25);
+    border-radius: 999px;
+    color: #235b7f;
+    background: rgba(255,255,255,0.72);
+    font-size: 0.84rem;
+    font-weight: 650;
+  }
+  h1 {
+    max-width: 900px;
+    margin: 18px 0 18px;
+    font-size: clamp(2.45rem, 7vw, 5.7rem);
+    line-height: 0.98;
+    letter-spacing: 0;
+  }
+  .lead {
+    max-width: 720px;
+    color: #314255;
+    font-size: clamp(1.05rem, 2vw, 1.35rem);
+  }
+  .hero-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+  }
+  .button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    text-decoration: none;
+    font-weight: 700;
+  }
+  .button.primary { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .button.secondary { background: #fff; color: var(--ink); }
+  .system-visual {
+    position: relative;
+    min-height: 520px;
+    padding: 22px;
+    border: 1px solid rgba(24,34,48,0.10);
+    border-radius: 8px;
+    background: rgba(255,255,255,0.78);
+    box-shadow: var(--shadow);
+  }
+  .visual-title {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    align-items: center;
+    margin-bottom: 16px;
+    font-weight: 750;
+  }
+  .pipeline {
+    display: grid;
+    gap: 12px;
+  }
+  .node {
+    border: 1px solid var(--line);
+    border-left: 6px solid var(--blue);
+    border-radius: 8px;
+    padding: 13px 14px;
+    background: #fff;
+  }
+  .node strong { display: block; margin-bottom: 3px; }
+  .node span { color: var(--muted); font-size: 0.92rem; }
+  .node.green { border-left-color: var(--green); }
+  .node.amber { border-left-color: var(--amber); }
+  .node.red { border-left-color: var(--red); }
+  .node.violet { border-left-color: var(--violet); }
+  .flow-arrow {
+    text-align: center;
+    color: #6a7b8d;
+    font-weight: 800;
+  }
+  section {
+    padding: clamp(44px, 7vw, 82px) clamp(18px, 5vw, 72px);
+  }
+  .section-head {
+    max-width: 780px;
+    margin-bottom: 26px;
+  }
+  h2 {
+    margin: 0 0 12px;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: 0;
+  }
+  h3 {
+    margin: 0 0 8px;
+    font-size: 1.12rem;
+    letter-spacing: 0;
+  }
+  p { margin: 0 0 14px; }
+  .muted { color: var(--muted); }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+  }
+  .two-col {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 26px rgba(24, 34, 48, 0.06);
+  }
+  .card .tag {
+    display: inline-flex;
+    margin-bottom: 12px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: #eef5f9;
+    color: #235b7f;
+    font-size: 0.8rem;
+    font-weight: 750;
+  }
+  .band {
+    background: #fff;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .role-card {
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: 18px;
+    align-items: start;
+  }
+  .role-icon {
+    width: 76px;
+    height: 76px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: #edf6f1;
+    color: var(--green);
+    font-size: 2rem;
+    font-weight: 800;
+  }
+  .role-card:nth-child(2) .role-icon {
+    background: #eef3fb;
+    color: var(--blue);
+  }
+  .age-row {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 18px;
+  }
+  .age {
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: #fff;
+  }
+  .age strong { display: block; font-size: 1.25rem; }
+  .theory {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    gap: 22px;
+    align-items: stretch;
+  }
+  .ladder {
+    display: grid;
+    gap: 10px;
+    counter-reset: step;
+  }
+  .step {
+    position: relative;
+    padding: 16px 16px 16px 56px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+  }
+  .step::before {
+    counter-increment: step;
+    content: counter(step);
+    position: absolute;
+    left: 16px;
+    top: 16px;
+    width: 26px;
+    height: 26px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--ink);
+    color: #fff;
+    font-weight: 750;
+    font-size: 0.82rem;
+  }
+  .barrier-list {
+    display: grid;
+    gap: 12px;
+  }
+  .barrier {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+  }
+  .barrier em {
+    color: var(--muted);
+    font-style: normal;
+    font-size: 0.92rem;
+  }
+  .diagram {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-width: 980px;
+    margin: 26px auto 0;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    box-shadow: 0 10px 26px rgba(24, 34, 48, 0.06);
+  }
+  .diagram text { font-family: inherit; }
+  .convo {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    overflow: hidden;
+  }
+  .convo-head {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--line);
+    background: var(--wash);
+    font-weight: 750;
+  }
+  .convo-head span { color: var(--muted); font-weight: 500; font-size: 0.88rem; }
+  .convo-body { padding: 16px; display: grid; gap: 10px; }
+  .bubble {
+    max-width: 92%;
+    padding: 10px 13px;
+    border-radius: 10px;
+    font-size: 0.93rem;
+    line-height: 1.5;
+  }
+  .bubble.u { justify-self: end; background: #e8f1f8; border: 1px solid #cfe2ef; }
+  .bubble.b { justify-self: start; background: var(--wash); border: 1px solid var(--line); }
+  .bubble .who { display: block; font-size: 0.76rem; font-weight: 750; color: var(--muted); margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .mini-card {
+    justify-self: start;
+    width: 92%;
+    padding: 10px 13px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: #f0f4f8;
+    font-size: 0.86rem;
+  }
+  .mini-card .pill {
+    display: inline-block;
+    padding: 1px 9px;
+    border-radius: 999px;
+    background: #c2571a;
+    color: #fff;
+    font-weight: 700;
+    font-size: 0.8rem;
+  }
+  .triage-box {
+    margin-top: 18px;
+    padding: 16px 18px;
+    border: 1px solid rgba(178,107,22,0.4);
+    border-left: 6px solid var(--amber);
+    border-radius: 8px;
+    background: #fff9ef;
+  }
+  .numbers-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 22px;
+  }
+  .number {
+    padding: 16px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+    text-align: center;
+  }
+  .number strong { display: block; font-size: 1.7rem; }
+  .number span { color: var(--muted); font-size: 0.86rem; }
+  .source-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .source {
+    min-height: 128px;
+    padding: 16px;
+    border-radius: 8px;
+    color: #fff;
+    background: var(--ink);
+  }
+  .source:nth-child(2) { background: var(--blue); }
+  .source:nth-child(3) { background: var(--green); }
+  .source:nth-child(4) { background: var(--violet); }
+  .source strong { display: block; margin-bottom: 8px; }
+  .safeguards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .safeguard {
+    padding: 17px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: #fff;
+  }
+  .cta {
+    color: #fff;
+    background: #152536;
+  }
+  .cta .section-head { max-width: 920px; }
+  .cta p { color: #dce8f4; }
+  .cta .button.secondary { border-color: rgba(255,255,255,0.25); color: #fff; background: transparent; }
+  footer {
+    padding: 26px clamp(18px, 5vw, 72px);
+    color: var(--muted);
+    background: #fff;
+    border-top: 1px solid var(--line);
+  }
+  @media (max-width: 900px) {
+    .hero, .two-col, .theory { grid-template-columns: 1fr; }
+    .grid, .source-strip, .age-row, .safeguards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .system-visual { min-height: auto; }
+  }
+  @media (max-width: 620px) {
+    .topbar { align-items: flex-start; flex-direction: column; }
+    .grid, .source-strip, .age-row, .safeguards { grid-template-columns: 1fr; }
+    .role-card { grid-template-columns: 1fr; }
+    h1 { font-size: 2.8rem; }
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/" aria-label="Civic Bridge AI home"><img src="/logo.png" alt="Civic Bridge AI" style="height:42px;display:block;margin:-4px 0"></a>
+  <nav class="nav" aria-label="Page sections">
+    <a href="#method">Method</a>
+    <a href="#roles">Roles</a>
+    <a href="#example">Example</a>
+    <a href="#teaching">Teaching</a>
+    <a href="#evidence">Evidence</a>
+    <a href="/dashboard.html">Dashboard</a>
+    <a href="/">Chat demo</a>
+  </nav>
+</header>
+
+<main>
+  <section class="hero">
+    <div>
+      <span class="eyebrow">Behind the chatbot</span>
+      <h1>How Civic Bridge AI Works</h1>
+      <p class="lead">
+        Civic Bridge AI turns a complex hate-speech incident into teachable,
+        evidence-grounded guidance: what happened, why it blocks dialogue, how
+        to teach through it, and when to connect people with human support.
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="#method">See the method</a>
+        <a class="button secondary" href="/">Open the chatbot</a>
+      </div>
+    </div>
+    <div class="system-visual" aria-label="System flow diagram">
+      <div class="visual-title">
+        <span>One conversation, five grounded layers</span>
+        <span class="muted">Live pipeline</span>
+      </div>
+      <div class="pipeline">
+        <div class="node"><strong>Role + age + country</strong><span>Teacher or student, age band, Cyprus or another country context.</span></div>
+        <div class="flow-arrow">↓</div>
+        <div class="node red"><strong>Safety and privacy screen</strong><span>Triage if a child appears personally targeted; no names, profiles, or school identifiers.</span></div>
+        <div class="flow-arrow">↓</div>
+        <div class="node amber"><strong>Two-axis analysis</strong><span>Severity tier plus semantic barriers that explain how dialogue is blocked.</span></div>
+        <div class="flow-arrow">↓</div>
+        <div class="node green"><strong>Teaching and response path</strong><span>Understand it, teach with it, or report/escalate with country-specific contacts.</span></div>
+        <div class="flow-arrow">↓</div>
+        <div class="node violet"><strong>Evidence layer</strong><span>Council of Europe standards, ECHR cases, source citations, and local registries.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="method">
+    <div class="section-head">
+      <h2>It is not a keyword filter. It is a guided reasoning system.</h2>
+      <p class="muted">
+        The chatbot hides a deliberately layered method: legal and policy
+        standards ground the answer, semantic-barrier theory explains the
+        communicative harm, and pedagogy turns the analysis into classroom
+        action.
+      </p>
+    </div>
+    <div class="grid">
+      <article class="card">
+        <span class="tag">Grounded standards</span>
+        <h3>Council of Europe risk signals</h3>
+        <p>
+          Civic Bridge AI uses a four-tier severity model grounded in Council
+          of Europe Recommendation CM/Rec(2022)16. It distinguishes protected
+          offensive expression from denigration, dehumanisation, and incitement
+          risk.
+        </p>
+      </article>
+      <article class="card">
+        <span class="tag">Semantic barriers</span>
+        <h3>What the message does to dialogue</h3>
+        <p>
+          The system looks for the seven codebook mechanisms: rigid opposition,
+          transfer of meaning, prohibited thoughts, stigma, undermining the
+          motive, distrust, and bracketing. That shifts the focus from labels
+          to repairable dialogue failures.
+        </p>
+      </article>
+      <article class="card">
+        <span class="tag">Practical guidance</span>
+        <h3>From risk signal to next step</h3>
+        <p>
+          The assistant offers a controlled path: understand the incident,
+          teach with it, or report it. It keeps legal determination with human
+          authorities and keeps educators focused on safe, proportionate action.
+        </p>
+      </article>
+    </div>
+
+    <svg class="diagram" viewBox="0 0 880 400" role="img"
+         aria-label="Two-axis analysis: severity routes to the reporting path, semantic barriers route to the education path">
+      <defs>
+        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0L10 5L0 10z" fill="#6a7b8d"/>
+        </marker>
+      </defs>
+
+      <text x="20" y="34" font-size="15" font-weight="700" fill="#182230">Two independent axes, two different paths</text>
+
+      <!-- the post -->
+      <rect x="20" y="160" width="160" height="104" rx="10" fill="#fff" stroke="#dce5ee"/>
+      <text x="100" y="188" text-anchor="middle" font-size="14" font-weight="700" fill="#182230">A post</text>
+      <line x1="40" y1="206" x2="160" y2="206" stroke="#cfd6df" stroke-width="6" stroke-linecap="round"/>
+      <line x1="40" y1="224" x2="140" y2="224" stroke="#cfd6df" stroke-width="6" stroke-linecap="round"/>
+      <line x1="40" y1="242" x2="152" y2="242" stroke="#cfd6df" stroke-width="6" stroke-linecap="round"/>
+
+      <line x1="182" y1="212" x2="240" y2="212" stroke="#6a7b8d" stroke-width="2" marker-end="url(#arr)"/>
+
+      <!-- one grounded analysis -->
+      <rect x="244" y="152" width="196" height="120" rx="10" fill="#182230"/>
+      <text x="342" y="196" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">One grounded</text>
+      <text x="342" y="216" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">analysis</text>
+      <text x="342" y="244" text-anchor="middle" font-size="11" fill="#b9c6d4">CoE standards + codebook</text>
+
+      <!-- split -->
+      <path d="M442 186 C 496 186, 496 108, 540 108" fill="none" stroke="#6a7b8d" stroke-width="2" marker-end="url(#arr)"/>
+      <path d="M442 238 C 496 238, 496 316, 540 316" fill="none" stroke="#6a7b8d" stroke-width="2" marker-end="url(#arr)"/>
+
+      <!-- severity axis -->
+      <text x="544" y="74" font-size="11" font-weight="750" fill="#b26b16" letter-spacing="1">AXIS 1</text>
+      <rect x="544" y="82" width="150" height="64" rx="10" fill="#fff" stroke="#b26b16" stroke-width="1.6"/>
+      <text x="619" y="108" text-anchor="middle" font-size="13.5" font-weight="700" fill="#182230">Severity tier 1-4</text>
+      <text x="619" y="128" text-anchor="middle" font-size="11.5" fill="#566579">how harmful is this?</text>
+      <line x1="696" y1="114" x2="724" y2="114" stroke="#6a7b8d" stroke-width="2" marker-end="url(#arr)"/>
+      <rect x="728" y="82" width="132" height="64" rx="10" fill="#a33b3b"/>
+      <text x="794" y="108" text-anchor="middle" font-size="13.5" font-weight="700" fill="#fff">Respond + report</text>
+      <text x="794" y="128" text-anchor="middle" font-size="11" fill="#f2d8d8">authorities, report draft</text>
+
+      <!-- barriers axis -->
+      <text x="544" y="282" font-size="11" font-weight="750" fill="#1f6f9f" letter-spacing="1">AXIS 2</text>
+      <rect x="544" y="290" width="150" height="64" rx="10" fill="#fff" stroke="#1f6f9f" stroke-width="1.6"/>
+      <text x="619" y="316" text-anchor="middle" font-size="13.5" font-weight="700" fill="#182230">Semantic barriers</text>
+      <text x="619" y="336" text-anchor="middle" font-size="11.5" fill="#566579">what blocks dialogue?</text>
+      <line x1="696" y1="322" x2="724" y2="322" stroke="#6a7b8d" stroke-width="2" marker-end="url(#arr)"/>
+      <rect x="728" y="290" width="132" height="64" rx="10" fill="#2f7a55"/>
+      <text x="794" y="316" text-anchor="middle" font-size="13.5" font-weight="700" fill="#fff">Educate</text>
+      <text x="794" y="336" text-anchor="middle" font-size="11" fill="#d6e9de">counter-strategies, activities</text>
+
+      <!-- footnote -->
+      <text x="20" y="386" font-size="11.5" fill="#566579">A post can be lawful yet loaded with barriers: that is exactly the content moderation ignores and education can address.</text>
+    </svg>
+  </section>
+
+  <section id="roles" class="band">
+    <div class="section-head">
+      <h2>Roles and age groups shape the conversation.</h2>
+      <p class="muted">
+        A teacher needs practical classroom moves. A student needs a thinking
+        partner. A younger learner needs safer wording. The same incident is
+        therefore handled differently depending on who is asking.
+      </p>
+    </div>
+    <div class="two-col">
+      <article class="card role-card">
+        <div class="role-icon">T</div>
+        <div>
+          <h3>Teacher guidance</h3>
+          <p>
+            Teachers receive direct explanations, classroom options, RFCDC
+            links, and structured choices: understand, teach, or report. The
+            assistant avoids overloading the teacher with a full lesson plan
+            until they ask for depth.
+          </p>
+        </div>
+      </article>
+      <article class="card role-card">
+        <div class="role-icon">S</div>
+        <div>
+          <h3>Student guidance</h3>
+          <p>
+            Students get Socratic support: who is targeted, whose voice is
+            missing, and what the message asks people to feel. If the student
+            appears personally targeted, safety and help-seeking come first.
+          </p>
+        </div>
+      </article>
+    </div>
+    <div class="age-row" aria-label="Age group adaptations">
+      <div class="age"><strong>6-9</strong><span class="muted">Simplified language, no harsh repetition.</span></div>
+      <div class="age"><strong>10-13</strong><span class="muted">Gentle examples and severe-span redaction.</span></div>
+      <div class="age"><strong>14-17</strong><span class="muted">More explicit reasoning and realistic counter-speech.</span></div>
+      <div class="age"><strong>18+</strong><span class="muted">Fuller explanation and professional framing.</span></div>
+    </div>
+  </section>
+
+  <section id="example" class="band">
+    <div class="section-head">
+      <h2>The same incident, two very different conversations.</h2>
+      <p class="muted">
+        A real flow from the live system. Both users share the same comment:
+        <em>"They will never change, it is in their nature. Anyone who talks to
+        them is a traitor."</em> The teacher gets a professional read and a
+        choice of paths. The student gets a thinking partner who asks before
+        telling.
+      </p>
+    </div>
+    <div class="two-col">
+      <div class="convo">
+        <div class="convo-head">Teacher, class age 14-17 <span>didactic flow</span></div>
+        <div class="convo-body">
+          <div class="bubble u"><span class="who">Teacher</span>A student showed me this comment under a news article: "They will never change, it is in their nature. Anyone who talks to them is a traitor." What am I looking at?</div>
+          <div class="mini-card"><span class="pill">Tier 3</span> potential hate speech for human review<br>rigid opposition: "They will never change, it is in their nature" &middot; stigma: "anyone who talks to them is a traitor"<br>Counter-strategies: superordinate identity, outgroup empathy &middot; Related: F&eacute;ret v Belgium</div>
+          <div class="bubble b"><span class="who">Civic Bridge</span>You are looking at a comment that essentialises a group as unchangeable and shames anyone who engages with them. The card on your screen carries the detail. Would you like to (a) understand it further, (b) teach with it, or (c) report it?</div>
+          <div class="bubble u"><span class="who">Teacher</span>b) Teach with it.</div>
+          <div class="bubble b"><span class="who">Civic Bridge</span>Two moves for 14-17s: first, have students rewrite the comment so it expresses the same worry without the either/or frame, then compare what changed. Second, a short role-play on how it feels to be the one called a traitor for talking. Both build RFCDC empathy and critical thinking. Want a third, or shall we go deeper on one?</div>
+        </div>
+      </div>
+      <div class="convo">
+        <div class="convo-head">Student, age 14-17 <span>Socratic flow</span></div>
+        <div class="convo-body">
+          <div class="bubble u"><span class="who">Student</span>I saw this under a video: "They will never change, it is in their nature. Anyone who talks to them is a traitor." Is this hate speech?</div>
+          <div class="bubble b"><span class="who">Civic Bridge</span>Good that you stopped to ask. Before I give you labels, two questions: who is being talked about here, and what is this post asking its readers to feel about them?</div>
+          <div class="bubble u"><span class="who">Student</span>Some group, it does not even say who. It wants you to feel like they are dangerous and that being friendly with them is betrayal.</div>
+          <div class="bubble b"><span class="who">Civic Bridge</span>Exactly. You found both moves yourself: it treats a whole group as one unchangeable thing, and it punishes anyone who builds a bridge. Those are known dialogue-blockers called rigid opposition and stigma. Notice it never gives a reason, only pressure. What would you ask the person who wrote it?</div>
+        </div>
+      </div>
+    </div>
+    <div class="triage-box">
+      <strong>And if the student is the target?</strong>
+      <p class="muted" style="margin:6px 0 0">
+        If a student writes "they keep posting things about me and I am scared",
+        the analysis never runs. A rule-based screen, no AI involved, answers
+        instantly with help-seeking first: talk to a trusted adult, the
+        country's child helpline (116 111 in Cyprus), evidence preservation,
+        and a gentle way back if the system misread the situation. This is what
+        the system refuses to do: it will not give a scared child a lecture on
+        discourse analysis.
+      </p>
+    </div>
+  </section>
+
+  <section id="teaching">
+    <div class="theory">
+      <div class="section-head">
+        <h2>The teaching theory is dialogue restoration.</h2>
+        <p class="muted">
+          The goal is not only to classify a harmful message. The goal is to
+          help teachers and students understand how speech closes democratic
+          conversation, then practise ways to reopen it.
+        </p>
+      </div>
+      <div class="ladder">
+        <div class="step"><strong>Notice the target and frame.</strong><br><span class="muted">Who is being spoken about, and as what kind of person or group?</span></div>
+        <div class="step"><strong>Name the semantic barrier.</strong><br><span class="muted">Identify the mechanism: rigid opposition, transfer of meaning, stigma, distrust, prohibited thoughts, undermining the motive, or bracketing.</span></div>
+        <div class="step"><strong>Connect to RFCDC competences.</strong><br><span class="muted">Use democratic culture competences such as empathy, critical thinking, respect, and tolerance of ambiguity.</span></div>
+        <div class="step"><strong>Choose a safe response path.</strong><br><span class="muted">Classroom activity, supportive conversation, counter-speech, documentation, or country-specific reporting.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>Seven semantic barriers explain why some speech breaks civic dialogue.</h2>
+      <p class="muted">
+        Hate speech is not only a set of bad words. It works through specific,
+        recognisable mechanisms that shut down dialogue. The codebook encodes
+        seven of them from peer-reviewed social psychology (Moscovici;
+        Gillespie 2008; Avraamidou and Psaltis 2019), each with linguistic
+        markers, annotated examples, and matched counter-strategies.
+      </p>
+    </div>
+    <div class="barrier-list">
+      <div class="barrier"><strong>Rigid opposition</strong><em>Binary us-versus-them framing that leaves no middle ground: "they will never change".</em></div>
+      <div class="barrier"><strong>Transfer of meaning</strong><em>Linking a group to an already loaded category (invasion, disease, foreign agents) so hostility transfers automatically.</em></div>
+      <div class="barrier"><strong>Prohibited thoughts</strong><em>Marking the alternative view as dangerous even to consider: "it would be the end of us".</em></div>
+      <div class="barrier"><strong>Stigma</strong><em>Branding those who engage with the other side as traitors or naive, enforcing conformity.</em></div>
+      <div class="barrier"><strong>Undermining the motive</strong><em>Dismissing a speaker by attacking who pays or drives them instead of what they say.</em></div>
+      <div class="barrier"><strong>Distrust</strong><em>Categorical, history-laden distrust of an entire group as a source: "you cannot trust a single one".</em></div>
+      <div class="barrier"><strong>Bracketing</strong><em>Holding the other view at a distance through hedging or refusal: "their version of history", "nothing to discuss".</em></div>
+    </div>
+  </section>
+
+  <section id="evidence" class="band">
+    <div class="section-head">
+      <h2>External sources keep the system auditable.</h2>
+      <p class="muted">
+        Civic Bridge AI retrieves and cites external sources rather than asking
+        users to trust a black-box answer. The evidence layer combines RAG,
+        curated norms, ECHR cases, and country registries.
+      </p>
+    </div>
+    <div class="source-strip">
+      <div class="source"><strong>CM/Rec(2022)16</strong>Graduated hate-speech standards and explanatory guidance.</div>
+      <div class="source"><strong>ECHR Article 10</strong>Freedom of expression context and case-law framing.</div>
+      <div class="source"><strong>ECRI and CoE reports</strong>Policy evidence and democratic-resilience context.</div>
+      <div class="source"><strong>Country registries</strong>Cyprus support, hotlines, equality body, and reporting contacts.</div>
+    </div>
+    <div class="numbers-strip" aria-label="System contents in numbers">
+      <div class="number"><strong>439</strong><span>indexed passages from 7 Council of Europe documents</span></div>
+      <div class="number"><strong>58</strong><span>European Court of Human Rights cases, theme-tagged</span></div>
+      <div class="number"><strong>15</strong><span>curated legal passages with citable IDs</span></div>
+      <div class="number"><strong>46</strong><span>member states in the support registry, Cyprus verified</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>From single incidents to the aggregate picture.</h2>
+      <p class="muted">
+        Every analysis contributes categorical signals (tier, mechanisms,
+        themes) to an aggregate view. Never the text, never an identity. The
+        <a href="/dashboard.html">awareness dashboard</a> turns the stream of
+        incidents into something a municipality, ministry, or school authority
+        can act on: where education is the right tool, where reporting channels
+        need strengthening, and which dialogue-blocking mechanisms dominate
+        local discourse.
+      </p>
+      <p class="muted">
+        This is the surface for policy makers and institutions. They do not
+        chat with the assistant; they read the aggregate picture, never
+        individuals, framed through the graduated-response logic of
+        CM/Rec(2022)16.
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="/dashboard.html">Open the dashboard</a>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <h2>What the jury does not see in the chat window.</h2>
+      <p class="muted">
+        The visible chatbot is the last step. Behind it is a set of constraints
+        that keep the answer grounded, age-aware, educational, and safe.
+      </p>
+    </div>
+    <div class="grid">
+      <article class="card">
+        <h3>Analysis card</h3>
+        <p>
+          The tier card is generated separately from the conversational reply.
+          It shows risk signals for human review while the assistant keeps the
+          conversation focused on next steps.
+        </p>
+      </article>
+      <article class="card">
+        <h3>Retrieval with citations</h3>
+        <p>
+          Open questions trigger retrieval from the legal corpus. The interface
+          collapses sources by default, but every reference can be opened.
+        </p>
+      </article>
+      <article class="card">
+        <h3>Reporting support</h3>
+        <p>
+          Reporting contacts appear when escalation is chosen, including
+          country-specific reporting options such as Cyprus cybercrime,
+          helplines, and equality-body information.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section class="band" id="safeguards">
+    <div class="section-head">
+      <h2>Safeguards are part of the product, not fine print.</h2>
+      <p class="muted">
+        The system is deliberately constrained because the domain is sensitive:
+        children, schools, discrimination, and possible legal escalation.
+      </p>
+    </div>
+    <svg class="diagram" viewBox="0 0 880 300" role="img" style="margin-bottom:22px"
+         aria-label="Safety pipeline: a rule-based triage screen runs before the AI, and code-level guards run after it">
+      <defs>
+        <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 0L10 5L0 10z" fill="#6a7b8d"/>
+        </marker>
+      </defs>
+
+      <text x="20" y="34" font-size="15" font-weight="700" fill="#182230">Safety is enforced in code, before and after the AI</text>
+
+      <!-- message -->
+      <rect x="20" y="92" width="120" height="56" rx="10" fill="#fff" stroke="#dce5ee"/>
+      <text x="80" y="116" text-anchor="middle" font-size="13" font-weight="700" fill="#182230">Message</text>
+      <text x="80" y="134" text-anchor="middle" font-size="11" fill="#566579">from a student</text>
+      <line x1="142" y1="120" x2="176" y2="120" stroke="#6a7b8d" stroke-width="2" marker-end="url(#arr2)"/>
+
+      <!-- triage screen -->
+      <rect x="180" y="84" width="168" height="72" rx="10" fill="#fff9ef" stroke="#b26b16" stroke-width="1.6"/>
+      <text x="264" y="110" text-anchor="middle" font-size="13" font-weight="700" fill="#182230">Triage screen</text>
+      <text x="264" y="128" text-anchor="middle" font-size="11" fill="#566579">rule-based, runs first,</text>
+      <text x="264" y="143" text-anchor="middle" font-size="11" fill="#566579">no AI involved</text>
+
+      <!-- branch down: help first -->
+      <path d="M264 158 L264 204" fill="none" stroke="#b26b16" stroke-width="2" marker-end="url(#arr2)"/>
+      <rect x="116" y="208" width="296" height="62" rx="10" fill="#b26b16"/>
+      <text x="264" y="234" text-anchor="middle" font-size="12.5" font-weight="700" fill="#fff">"This is about me" leads to help first</text>
+      <text x="264" y="252" text-anchor="middle" font-size="11" fill="#f6e3cb">trusted adults, child helpline 116 111</text>
+
+      <line x1="350" y1="120" x2="384" y2="120" stroke="#6a7b8d" stroke-width="2" marker-end="url(#arr2)"/>
+
+      <!-- LLM -->
+      <rect x="388" y="84" width="150" height="72" rx="10" fill="#182230"/>
+      <text x="463" y="116" text-anchor="middle" font-size="13.5" font-weight="700" fill="#fff">AI analysis + reply</text>
+      <text x="463" y="136" text-anchor="middle" font-size="11" fill="#b9c6d4">grounded, citable</text>
+      <line x1="540" y1="120" x2="574" y2="120" stroke="#6a7b8d" stroke-width="2" marker-end="url(#arr2)"/>
+
+      <!-- output guards -->
+      <rect x="578" y="84" width="168" height="72" rx="10" fill="#f0f7f3" stroke="#2f7a55" stroke-width="1.6"/>
+      <text x="662" y="106" text-anchor="middle" font-size="13" font-weight="700" fill="#182230">Output guards</text>
+      <text x="662" y="124" text-anchor="middle" font-size="11" fill="#566579">no legal determinations,</text>
+      <text x="662" y="139" text-anchor="middle" font-size="11" fill="#566579">under-13 redaction</text>
+      <line x1="748" y1="120" x2="782" y2="120" stroke="#6a7b8d" stroke-width="2" marker-end="url(#arr2)"/>
+
+      <!-- reply -->
+      <rect x="786" y="92" width="76" height="56" rx="10" fill="#fff" stroke="#dce5ee"/>
+      <text x="824" y="125" text-anchor="middle" font-size="13" font-weight="700" fill="#182230">Reply</text>
+
+      <text x="436" y="286" font-size="11.5" fill="#566579">The amber and green boxes are deterministic code paths.</text>
+      <text x="436" y="262" font-size="11.5" fill="#566579">No prompt failure can switch them off.</text>
+    </svg>
+
+    <div class="safeguards">
+      <div class="safeguard"><strong>No legal determinations.</strong><br><span class="muted">The system describes risk signals; authorities and courts decide legality.</span></div>
+      <div class="safeguard"><strong>Human review by design.</strong><br><span class="muted">The output supports educators and reviewers, not automated enforcement.</span></div>
+      <div class="safeguard"><strong>Privacy-first prompts.</strong><br><span class="muted">It avoids usernames, school names, profile links, exact locations, and names of minors.</span></div>
+      <div class="safeguard"><strong>Safety triage for students.</strong><br><span class="muted">If a student may be personally targeted, support and help-seeking take priority.</span></div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="section-head">
+      <h2>A bridge between standards, classrooms, and action.</h2>
+      <p>
+        Civic Bridge AI makes the reasoning behind hate-speech guidance visible:
+        standards for legitimacy, semantic barriers for understanding, pedagogy
+        for repair, and country contacts for real-world response.
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="/">Try the chatbot</a>
+        <a class="button secondary" href="#method">Review the method</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Civic Bridge AI is a human-review aid for education and civic response. It does not provide legal advice or make legal determinations.
+</footer>
+</body>
+</html>

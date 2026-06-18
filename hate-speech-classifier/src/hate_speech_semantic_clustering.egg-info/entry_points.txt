@@ -1,0 +1,7 @@
+[console_scripts]
+build-cluster-projection = hate_speech_clustering.projection:main
+cluster-hatexplain = hate_speech_clustering.cluster:main
+label-clusters = hate_speech_clustering.label_model:main
+predict-cluster = hate_speech_clustering.predict:main
+prepare-hatexplain = hate_speech_clustering.prepare:main
+serve-cluster-api = hate_speech_clustering.api:main

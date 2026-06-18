@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/png" href="/logo.png">
+<title>Awareness Dashboard | Civic Bridge AI</title>
+<style>
+  :root {
+    color-scheme: light;
+    --ink: #182230;
+    --muted: #566579;
+    --line: #dce5ee;
+    --paper: #ffffff;
+    --wash: #f5f8fb;
+    --blue: #1f6f9f;
+    --green: #2f7a55;
+    --amber: #b26b16;
+    --red: #a33b3b;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; color: var(--ink); background: var(--wash); line-height: 1.55; }
+  .topbar {
+    position: sticky; top: 0; z-index: 5;
+    display: flex; justify-content: space-between; align-items: center; gap: 20px;
+    padding: 14px clamp(18px, 4vw, 56px);
+    background: rgba(255,255,255,0.92); border-bottom: 1px solid var(--line);
+    backdrop-filter: blur(12px);
+  }
+  .brand { font-weight: 750; }
+  .nav { display: flex; gap: 14px; flex-wrap: wrap; font-size: 0.92rem; }
+  .nav a { color: var(--muted); text-decoration: none; }
+  .nav a:hover { color: var(--ink); }
+  main { max-width: 1080px; margin: 0 auto; padding: clamp(24px, 4vw, 48px) clamp(18px, 4vw, 56px); }
+  h1 { margin: 0 0 6px; font-size: clamp(1.8rem, 4vw, 2.6rem); }
+  .sub { color: var(--muted); max-width: 760px; margin-bottom: 8px; }
+  .privacy {
+    display: inline-block; margin: 8px 0 26px; padding: 8px 12px;
+    border: 1px solid rgba(47,122,85,0.35); border-radius: 8px;
+    background: rgba(47,122,85,0.08); color: #235b44; font-size: 0.9rem;
+  }
+  .kpis { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 14px; margin-bottom: 22px; }
+  .kpi { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 18px; }
+  .kpi strong { display: block; font-size: 2rem; }
+  .kpi span { color: var(--muted); font-size: 0.92rem; }
+  .panel { background: var(--paper); border: 1px solid var(--line); border-radius: 10px; padding: 20px; margin-bottom: 18px; }
+  .panel h2 { margin: 0 0 4px; font-size: 1.15rem; }
+  .panel .hint { color: var(--muted); font-size: 0.88rem; margin: 0 0 14px; }
+  .bar-row { display: grid; grid-template-columns: 220px 1fr 44px; gap: 10px; align-items: center; margin: 7px 0; font-size: 0.93rem; }
+  .bar-track { background: #eef3f8; border-radius: 6px; height: 18px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 6px; background: var(--blue); min-width: 2px; }
+  .bar-fill.t1 { background: var(--green); } .bar-fill.t2 { background: #b08900; }
+  .bar-fill.t3 { background: #c2571a; } .bar-fill.t4 { background: var(--red); }
+  .count { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip { padding: 5px 11px; border: 1px solid var(--line); border-radius: 999px; background: #fff; font-size: 0.88rem; color: var(--muted); }
+  .policy-note { border-left: 4px solid var(--blue); }
+  .empty { color: var(--muted); font-style: italic; }
+  footer { padding: 22px clamp(18px, 4vw, 56px); color: var(--muted); background: #fff; border-top: 1px solid var(--line); font-size: 0.9rem; }
+  @media (max-width: 720px) {
+    .kpis { grid-template-columns: 1fr; }
+    .bar-row { grid-template-columns: 130px 1fr 40px; }
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/" aria-label="Civic Bridge AI home"><img src="/logo.png" alt="Civic Bridge AI" style="height:42px;display:block;margin:-4px 0"></a>
+  <nav class="nav">
+    <a href="/">Chat demo</a>
+    <a href="/how-it-works.html">How it works</a>
+    <a href="/dashboard.html" style="color:var(--ink)">Dashboard</a>
+  </nav>
+</header>
+
+<main>
+  <h1>Awareness Dashboard</h1>
+  <p class="sub">
+    The aggregate picture of what this deployment has analysed: how severe,
+    which dialogue-blocking mechanisms dominate, and which themes recur. Built
+    for awareness raising and policy framing, not for surveillance.
+  </p>
+  <span class="privacy" id="privacy">Aggregated categorical signals only. No analysed text, no usernames, no identifiers are stored or shown.</span>
+
+  <div class="kpis">
+    <div class="kpi"><strong id="kpi-analyses">0</strong><span>analyses performed</span></div>
+    <div class="kpi"><strong id="kpi-week">0</strong><span>in the last 7 days</span></div>
+    <div class="kpi"><strong id="kpi-reports">0</strong><span>report drafts prepared</span></div>
+  </div>
+
+  <div class="panel">
+    <h2>Severity mix</h2>
+    <p class="hint">Four-tier risk-signal scale inspired by Council of Europe Recommendation CM/Rec(2022)16. Signals support human review; they are not legal determinations.</p>
+    <div id="tiers"></div>
+  </div>
+
+  <div class="panel">
+    <h2>Dialogue-blocking mechanisms (semantic barriers)</h2>
+    <p class="hint">Which mechanisms appear most often. Each maps to research-based counter-strategies used by the education module.</p>
+    <div id="barriers"><p class="empty">No analyses recorded yet. Run the chat demo or the rehearsal script to populate this view.</p></div>
+  </div>
+
+  <div class="panel">
+    <h2>Recurring themes</h2>
+    <p class="hint">Thematic vocabulary shared with the European Court of Human Rights case registry.</p>
+    <div id="themes" class="chips"><span class="empty">No data yet.</span></div>
+  </div>
+
+  <div class="panel">
+    <h2>Who is using the system</h2>
+    <div id="roles" class="chips"><span class="empty">No data yet.</span></div>
+  </div>
+
+  <div class="panel policy-note">
+    <h2>Reading this as a policy maker</h2>
+    <p class="hint" style="margin-bottom:0">
+      CM/Rec(2022)16 calls for graduated and differentiated responses. A
+      severity mix dominated by tiers 1 and 2 points to education, awareness
+      and counter-speech measures; recurring tier 3 signals justify
+      strengthening reporting channels and human review capacity; tier 4
+      signals concern conduct that may fall under criminal law and belong with
+      the competent authorities. The mechanism chart shows what dialogue
+      repair should target in schools and public communication.
+    </p>
+  </div>
+</main>
+
+<footer>
+  Civic Bridge AI is a human-review aid for education and civic response. Aggregates can be shared without enabling identification of any person, school, or small local group.
+</footer>
+
+<script>
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function label(id) {
+  return esc(String(id).replace(/_/g, " "));
+}
+
+function bars(el, entries, total, cls) {
+  if (!entries.length || !total) return;
+  el.innerHTML = entries.map(([name, count]) => {
+    const pct = Math.max(2, Math.round(100 * count / total));
+    return `<div class="bar-row"><span>${label(name)}</span>` +
+      `<div class="bar-track"><div class="bar-fill ${cls ? cls(name) : ""}" style="width:${pct}%"></div></div>` +
+      `<span class="count">${count}</span></div>`;
+  }).join("");
+}
+
+const TIER_LABELS = {
+  "1": "1 ordinary political expression",
+  "2": "2 offensive or harmful expression",
+  "3": "3 potential hate speech (human review)",
+  "4": "4 incitement/dehumanisation risk",
+};
+
+async function load() {
+  const d = await (await fetch("/stats")).json();
+  document.getElementById("kpi-analyses").textContent = d.analyses_total;
+  document.getElementById("kpi-week").textContent = d.analyses_last_7_days;
+  document.getElementById("kpi-reports").textContent = d.reports_total;
+  if (d.privacy_note) document.getElementById("privacy").textContent = d.privacy_note;
+
+  const tierEntries = Object.entries(d.by_tier).map(([t, c]) => [TIER_LABELS[t] || t, c]);
+  const tierTotal = Math.max(...Object.values(d.by_tier), 1);
+  const el = document.getElementById("tiers");
+  el.innerHTML = "";
+  Object.entries(d.by_tier).forEach(([t, c]) => {
+    const pct = Math.max(2, Math.round(100 * c / tierTotal));
+    el.innerHTML += `<div class="bar-row"><span>${esc(TIER_LABELS[t])}</span>` +
+      `<div class="bar-track"><div class="bar-fill t${t}" style="width:${pct}%"></div></div>` +
+      `<span class="count">${c}</span></div>`;
+  });
+
+  if (d.top_barriers.length) {
+    const max = d.top_barriers[0][1];
+    bars(document.getElementById("barriers"), d.top_barriers, max);
+  }
+  if (d.top_themes.length) {
+    document.getElementById("themes").innerHTML = d.top_themes.map(
+      ([t, c]) => `<span class="chip">${esc(t)} (${c})</span>`).join("");
+  }
+  const roles = Object.entries(d.by_role);
+  if (roles.length) {
+    document.getElementById("roles").innerHTML = roles.map(
+      ([r, c]) => `<span class="chip">${label(r)}: ${c} analyses</span>`).join("");
+  }
+}
+load();
+</script>
+</body>
+</html>

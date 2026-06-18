@@ -1,0 +1,29 @@
+[project]
+name = "civic-bridge-ai-rag"
+version = "0.1.0"
+description = "Civic Bridge AI RAG guidance service: two-axis hate-speech analysis and role/age-conditioned guidance grounded in Council of Europe standards"
+requires-python = ">=3.10"
+dependencies = [
+    "fastapi>=0.111",
+    "uvicorn[standard]>=0.30",
+    "litellm>=1.40",
+    "chromadb>=0.5",
+    "pydantic>=2.7",
+    "pyyaml>=6.0",
+    "httpx>=0.27",
+    "pypdf>=4.2",
+    "beautifulsoup4>=4.12",
+    "lxml>=5.2",
+    "python-dotenv>=1.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.2",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.uv]
+package = false
