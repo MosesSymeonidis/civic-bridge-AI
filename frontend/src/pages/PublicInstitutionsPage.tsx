@@ -291,17 +291,6 @@ function PublicInstitutionsPage() {
   ])
 
   useEffect(() => {
-    if (!isSelectionWorkspaceOpen) return
-
-    const animationFrame = window.requestAnimationFrame(() => {
-      document
-        .getElementById('incident-selections')
-        ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-    })
-    return () => window.cancelAnimationFrame(animationFrame)
-  }, [isSelectionWorkspaceOpen])
-
-  useEffect(() => {
     if (!isCsvImportOpen) return
 
     const animationFrame = window.requestAnimationFrame(() => {
