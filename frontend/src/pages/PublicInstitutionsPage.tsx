@@ -7,10 +7,26 @@ import SemanticClusterScatterplot, {
 } from '../components/SemanticClusterScatterplot'
 import SocialMediaCsvImport from '../components/SocialMediaCsvImport'
 import { availableLanguages, euCountries } from '../data/euCountries'
+import {
+  type DashboardParticipantType,
+  type DashboardSeverity,
+  dashboardSeverityOptions,
+} from '../services/dashboardProfileLinks'
 import { analyticsChannelName } from '../services/incidentAnalytics'
 
 type TimeRange = '30d' | '90d' | '12m'
-type ParticipantType = 'student' | 'educator' | 'social-media'
+type ParticipantType = DashboardParticipantType
+type SeverityFilter = DashboardSeverity
+
+type InitialDashboardFilters = {
+  timeRange: TimeRange
+  country: string
+  regionArea: string
+  language: string
+  participantType: ParticipantType | ''
+  severity: SeverityFilter | ''
+  openReviews: boolean
+}
 
 type DistributionItem = {
   key: string
@@ -33,8 +49,10 @@ type DashboardSummary = {
   filters: {
     time_range: TimeRange
     country: string | null
+    region_area: string | null
     language: string | null
     participant_type: ParticipantType | null
+    severity: SeverityFilter | null
     minimum_group_size: number
   }
   totals: {
@@ -81,6 +99,41 @@ const sourceColors: Record<string, string> = {
 }
 
 const languageColors = ['#184f3e', '#e96d4e', '#efc861', '#9caaa2']
+
+function isTimeRange(value: string | null): value is TimeRange {
+  return value === '30d' || value === '90d' || value === '12m'
+}
+
+function isParticipantType(value: string | null): value is ParticipantType {
+  return (
+    value === 'student' ||
+    value === 'educator' ||
+    value === 'social-media'
+  )
+}
+
+function isSeverityFilter(value: string | null): value is SeverityFilter {
+  return dashboardSeverityOptions.some((option) => option.value === value)
+}
+
+function initialDashboardFilters(): InitialDashboardFilters {
+  const params = new URLSearchParams(window.location.search)
+  const timeRange = params.get('time_range')
+  const participantType = params.get('participant_type')
+  const severity = params.get('severity')
+
+  return {
+    timeRange: isTimeRange(timeRange) ? timeRange : '30d',
+    country: params.get('country') ?? 'Cyprus',
+    regionArea: params.get('region_area') ?? '',
+    language: params.get('language') ?? '',
+    participantType: isParticipantType(participantType)
+      ? participantType
+      : '',
+    severity: isSeverityFilter(severity) ? severity : '',
+    openReviews: params.get('open_reviews') === 'true',
+  }
+}
 
 function linePoints(data: number[], max: number): string {
   const width = 560
@@ -140,20 +193,29 @@ function donutBackground(items: DistributionItem[]): string {
 }
 
 function PublicInstitutionsPage() {
+  const initialFilters = initialDashboardFilters()
   const socialPostPageUrl =
     configuredSocialPostPageUrl ||
     `${window.location.origin}/how-it-works`
-  const [timeRange, setTimeRange] = useState<TimeRange>('30d')
-  const [country, setCountry] = useState('Cyprus')
-  const [language, setLanguage] = useState('')
+  const [timeRange, setTimeRange] = useState<TimeRange>(
+    initialFilters.timeRange,
+  )
+  const [country, setCountry] = useState(initialFilters.country)
+  const [regionArea, setRegionArea] = useState(initialFilters.regionArea)
+  const [language, setLanguage] = useState(initialFilters.language)
   const [participantType, setParticipantType] = useState<
     ParticipantType | ''
-  >('')
+  >(initialFilters.participantType)
+  const [severity, setSeverity] = useState<SeverityFilter | ''>(
+    initialFilters.severity,
+  )
   const [dashboard, setDashboard] = useState<DashboardSummary | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState('')
   const [reloadToken, setReloadToken] = useState(0)
-  const [isReviewWorkflowOpen, setIsReviewWorkflowOpen] = useState(false)
+  const [isReviewWorkflowOpen, setIsReviewWorkflowOpen] = useState(
+    initialFilters.openReviews,
+  )
   const [isCsvImportOpen, setIsCsvImportOpen] = useState(false)
 
   useEffect(() => {
@@ -183,8 +245,10 @@ function PublicInstitutionsPage() {
       minimum_group_size: '1',
     })
     if (country) params.set('country', country)
+    if (regionArea) params.set('region_area', regionArea)
     if (language) params.set('language', language)
     if (participantType) params.set('participant_type', participantType)
+    if (severity) params.set('severity', severity)
 
     async function loadDashboard() {
       setIsLoading(true)
@@ -215,7 +279,15 @@ function PublicInstitutionsPage() {
 
     void loadDashboard()
     return () => controller.abort()
-  }, [country, language, participantType, reloadToken, timeRange])
+  }, [
+    country,
+    language,
+    participantType,
+    regionArea,
+    reloadToken,
+    severity,
+    timeRange,
+  ])
 
   useEffect(() => {
     if (!isReviewWorkflowOpen) return
@@ -350,6 +422,7 @@ function PublicInstitutionsPage() {
               value={country}
               onChange={(event) => {
                 setCountry(event.target.value)
+                setRegionArea('')
                 setLanguage('')
               }}
             >
@@ -360,6 +433,15 @@ function PublicInstitutionsPage() {
                 </option>
               ))}
             </select>
+          </label>
+          <label>
+            <span>Regional area</span>
+            <input
+              onChange={(event) => setRegionArea(event.target.value)}
+              placeholder="All regional areas"
+              type="text"
+              value={regionArea}
+            />
           </label>
           <label>
             <span>Language</span>
@@ -406,6 +488,22 @@ function PublicInstitutionsPage() {
               <option value="student">Students / young people</option>
               <option value="educator">Educators</option>
               <option value="social-media">Social media posts</option>
+            </select>
+          </label>
+          <label>
+            <span>Incident type</span>
+            <select
+              value={severity}
+              onChange={(event) =>
+                setSeverity(event.target.value as SeverityFilter | '')
+              }
+            >
+              <option value="">All incident types</option>
+              {dashboardSeverityOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
             </select>
           </label>
           <div className="institution-range" aria-label="Time range">
@@ -862,7 +960,9 @@ function PublicInstitutionsPage() {
             onClose={() => setIsReviewWorkflowOpen(false)}
             participantType={participantType}
             ragApiBaseUrl={ragApiBaseUrl}
+            regionArea={regionArea}
             refreshToken={reloadToken}
+            severity={severity}
             socialPostPageUrl={socialPostPageUrl}
             timeRange={timeRange}
           />

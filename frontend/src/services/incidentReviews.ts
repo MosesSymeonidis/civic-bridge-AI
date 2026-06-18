@@ -1,4 +1,8 @@
 import { analyticsChannelName } from './incidentAnalytics'
+import type {
+  DashboardParticipantType,
+  DashboardSeverity,
+} from './dashboardProfileLinks'
 
 export type ReviewOutcome =
   | 'bridge-response-adapted'
@@ -44,8 +48,10 @@ export type IncidentReviewQueue = {
 type ReviewFilters = {
   timeRange: '30d' | '90d' | '12m'
   country: string
+  regionArea: string
   language: string
-  participantType: 'student' | 'educator' | 'social-media' | ''
+  participantType: DashboardParticipantType | ''
+  severity: DashboardSeverity | ''
   reviewed: boolean
 }
 
@@ -65,10 +71,12 @@ export async function loadIncidentReviews(
     limit: '50',
   })
   if (filters.country) params.set('country', filters.country)
+  if (filters.regionArea) params.set('region_area', filters.regionArea)
   if (filters.language) params.set('language', filters.language)
   if (filters.participantType) {
     params.set('participant_type', filters.participantType)
   }
+  if (filters.severity) params.set('severity', filters.severity)
 
   const response = await fetch(
     `${apiBaseUrl}/dashboard/reviews?${params.toString()}`,

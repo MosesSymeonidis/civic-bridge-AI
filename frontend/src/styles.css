@@ -2949,6 +2949,28 @@ footer p {
   line-height: 1.45;
 }
 
+.chat-markdown__dashboard-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 30px;
+  width: fit-content;
+  max-width: 100%;
+  margin-top: 0.65rem;
+  padding: 0.38rem 0.55rem;
+  border: 1px solid #b8d4c5;
+  border-radius: 0.45rem;
+  color: #12543f;
+  background: #edf7f1;
+  font-size: 0.58rem;
+  font-weight: 850;
+  text-decoration: none;
+}
+
+.chat-markdown__dashboard-link:hover {
+  background: #e2f0e8;
+}
+
 .chat-message .chat-analysis-unavailable {
   margin: 0 0 0.55rem;
   padding: 0.75rem 0.9rem;
@@ -3768,7 +3790,7 @@ footer p {
 
 .institution-filters {
   display: grid;
-  grid-template-columns: repeat(3, minmax(140px, 0.7fr)) minmax(280px, 1fr);
+  grid-template-columns: repeat(4, minmax(140px, 1fr));
   gap: 0.8rem;
   align-items: end;
   margin-top: 2rem;
@@ -3792,7 +3814,8 @@ footer p {
   text-transform: uppercase;
 }
 
-.institution-filters select {
+.institution-filters select,
+.institution-filters input {
   width: 100%;
   min-height: 38px;
   padding: 0.55rem 0.7rem;
@@ -3809,6 +3832,7 @@ footer p {
 .institution-range {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  grid-column: span 2;
   gap: 0.3rem;
   padding: 0.25rem;
   border-radius: 0.65rem;

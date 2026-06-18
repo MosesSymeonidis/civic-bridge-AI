@@ -206,6 +206,51 @@ async def test_completed_discussions_feed_dashboard_aggregates(
         filtered_response.json()["totals"]["analysed_conversations"] == 1
     )
 
+    profile_response = await client.get(
+        "/api/v1/dashboard/summary",
+        params={
+            "time_range": "30d",
+            "country": "Cyprus",
+            "region_area": "Nicosia",
+            "severity": "potential-hate-speech",
+            "minimum_group_size": 1,
+        },
+    )
+    assert profile_response.status_code == 200
+    profile_dashboard = profile_response.json()
+    assert profile_dashboard["filters"]["region_area"] == "Nicosia"
+    assert profile_dashboard["filters"]["severity"] == "potential-hate-speech"
+    assert profile_dashboard["totals"]["analysed_conversations"] == 1
+    assert profile_dashboard["totals"]["incident_signals"] == 1
+    assert profile_dashboard["sources"][0]["key"] == "student"
+
+    mismatch_response = await client.get(
+        "/api/v1/dashboard/summary",
+        params={
+            "time_range": "30d",
+            "country": "Cyprus",
+            "region_area": "Limassol",
+            "severity": "potential-hate-speech",
+            "minimum_group_size": 1,
+        },
+    )
+    assert mismatch_response.status_code == 200
+    assert (
+        mismatch_response.json()["totals"]["analysed_conversations"] == 0
+    )
+
+    filtered_review_response = await client.get(
+        "/api/v1/dashboard/reviews",
+        params={
+            "reviewed": "true",
+            "country": "Cyprus",
+            "region_area": "Nicosia",
+            "severity": "potential-hate-speech",
+        },
+    )
+    assert filtered_review_response.status_code == 200
+    assert filtered_review_response.json()["total"] == 1
+
 
 async def test_discussion_can_only_be_completed_once(
     client: httpx2.AsyncClient,

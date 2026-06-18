@@ -181,8 +181,10 @@ def list_incident_reviews(
     *,
     time_range: DashboardTimeRange,
     country: str | None,
+    region_area: str | None,
     language: str | None,
     participant_type: ParticipantType | None,
+    severity: SeverityTier | None,
     reviewed: bool,
     limit: int,
 ) -> IncidentReviewQueueResponse:
@@ -193,8 +195,10 @@ def list_incident_reviews(
             start,
             end,
             country,
+            region_area,
             language,
             participant_type,
+            severity,
         ),
         DiscussionAnalysis.human_review_required.is_(True),
         (
@@ -506,8 +510,10 @@ def _base_conditions(
     start: datetime,
     end: datetime,
     country: str | None,
+    region_area: str | None,
     language: str | None,
     participant_type: ParticipantType | None,
+    severity: SeverityTier | None,
 ) -> list[Any]:
     conditions: list[Any] = [
         DiscussionAnalysis.completed_at >= start,
@@ -515,12 +521,16 @@ def _base_conditions(
     ]
     if country is not None:
         conditions.append(DiscussionAnalysis.country == country)
+    if region_area is not None:
+        conditions.append(DiscussionAnalysis.region_area == region_area)
     if language is not None:
         conditions.append(DiscussionAnalysis.language == language)
     if participant_type is not None:
         conditions.append(
             DiscussionAnalysis.participant_type == participant_type
         )
+    if severity is not None:
+        conditions.append(DiscussionAnalysis.severity == severity)
     return conditions
 
 
@@ -649,8 +659,10 @@ def _semantic_cluster_plot(
     start: datetime,
     end: datetime,
     country: str | None,
+    region_area: str | None,
     language: str | None,
     participant_type: ParticipantType | None,
+    severity: SeverityTier | None,
     minimum_group_size: int,
 ) -> DashboardSemanticClusterPlot:
     conditions: list[Any] = [
@@ -659,11 +671,23 @@ def _semantic_cluster_plot(
     ]
     if country is not None:
         conditions.append(SemanticClusterAnalysis.country == country)
+    if region_area is not None:
+        conditions.append(SemanticClusterAnalysis.region_area == region_area)
     if language is not None:
         conditions.append(SemanticClusterAnalysis.language == language)
     if participant_type is not None:
         conditions.append(
             SemanticClusterAnalysis.participant_type == participant_type
+        )
+    if severity is not None:
+        severity_event_ids = select(DiscussionAnalysis.analysis_event_id).where(
+            DiscussionAnalysis.analysis_event_id.is_not(None),
+            DiscussionAnalysis.severity == severity,
+        )
+        conditions.append(
+            SemanticClusterAnalysis.classification_event_id.in_(
+                severity_event_ids
+            )
         )
 
     version_rows = db.execute(
@@ -801,8 +825,10 @@ def build_dashboard_summary(
     *,
     time_range: DashboardTimeRange,
     country: str | None,
+    region_area: str | None,
     language: str | None,
     participant_type: ParticipantType | None,
+    severity: SeverityTier | None,
     minimum_group_size: int,
 ) -> DashboardSummaryResponse:
     now = datetime.now(timezone.utc)
@@ -811,8 +837,10 @@ def build_dashboard_summary(
         start,
         end,
         country,
+        region_area,
         language,
         participant_type,
+        severity,
     )
 
     total = _count(db, conditions)
@@ -844,8 +872,10 @@ def build_dashboard_summary(
         start - period_duration,
         start,
         country,
+        region_area,
         language,
         participant_type,
+        severity,
     )
     previous_total = _count(db, previous_conditions)
     previous_period_change = (
@@ -924,8 +954,10 @@ def build_dashboard_summary(
         filters=DashboardAppliedFilters(
             time_range=time_range,
             country=country,
+            region_area=region_area,
             language=language,
             participant_type=participant_type,
+            severity=severity,
             minimum_group_size=minimum_group_size,
         ),
         totals=DashboardTotals(
@@ -992,8 +1024,10 @@ def build_dashboard_summary(
             start=start,
             end=end,
             country=country,
+            region_area=region_area,
             language=language,
             participant_type=participant_type,
+            severity=severity,
             minimum_group_size=minimum_group_size,
         ),
     )

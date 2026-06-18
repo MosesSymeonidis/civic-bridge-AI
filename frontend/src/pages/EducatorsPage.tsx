@@ -15,6 +15,7 @@ import {
   analyzeIncident,
   type ChatAnalysis,
 } from '../services/chatAnalysis'
+import { buildIncidentProfileDashboardUrl } from '../services/dashboardProfileLinks'
 import {
   type ChatReference,
   type RagCitation,
@@ -912,7 +913,20 @@ function EducatorsPage() {
                     </p>
                   ) : null}
                   {message.role === 'assistant' ? (
-                    <ChatMarkdown content={message.content} />
+                    <ChatMarkdown
+                      content={message.content}
+                      dashboardUrl={
+                        message.analysis && session
+                          ? buildIncidentProfileDashboardUrl(
+                              {
+                                country: session.context.country,
+                                regionArea: session.context.region_area,
+                                language: session.context.language,
+                              },
+                            )
+                          : undefined
+                      }
+                    />
                   ) : (
                     <p className="chat-message__body">{message.content}</p>
                   )}

@@ -304,8 +304,10 @@ class DashboardTrendPoint(BaseModel):
 class DashboardAppliedFilters(BaseModel):
     time_range: DashboardTimeRange
     country: str | None
+    region_area: str | None
     language: str | None
     participant_type: ParticipantType | None
+    severity: SeverityTier | None
     minimum_group_size: int
 
 

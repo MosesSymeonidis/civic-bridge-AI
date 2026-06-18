@@ -3,9 +3,10 @@ import remarkGfm from 'remark-gfm'
 
 type ChatMarkdownProps = {
   content: string
+  dashboardUrl?: string
 }
 
-function ChatMarkdown({ content }: ChatMarkdownProps) {
+function ChatMarkdown({ content, dashboardUrl }: ChatMarkdownProps) {
   return (
     <div className="chat-message__body chat-markdown">
       <ReactMarkdown
@@ -24,6 +25,16 @@ function ChatMarkdown({ content }: ChatMarkdownProps) {
       >
         {content}
       </ReactMarkdown>
+      {dashboardUrl ? (
+        <a
+          className="chat-markdown__dashboard-link"
+          href={dashboardUrl}
+          rel="noreferrer"
+          target="_blank"
+        >
+          See more similar incidents within your area
+        </a>
+      ) : null}
     </div>
   )
 }

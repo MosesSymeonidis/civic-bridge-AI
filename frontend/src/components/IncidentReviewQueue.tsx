@@ -12,6 +12,10 @@ import {
   loadIncidentReviews,
 } from '../services/incidentReviews'
 import { saveEducatorActivityHandoff } from '../services/educatorActivityHandoff'
+import type {
+  DashboardParticipantType,
+  DashboardSeverity,
+} from '../services/dashboardProfileLinks'
 import { createUuid } from '../services/uuid'
 
 type IncidentReviewQueueProps = {
@@ -20,8 +24,10 @@ type IncidentReviewQueueProps = {
   socialPostPageUrl: string
   timeRange: '30d' | '90d' | '12m'
   country: string
+  regionArea: string
   language: string
-  participantType: 'student' | 'educator' | 'social-media' | ''
+  participantType: DashboardParticipantType | ''
+  severity: DashboardSeverity | ''
   refreshToken: number
   onClose: () => void
 }
@@ -251,8 +257,10 @@ function IncidentReviewQueue({
   socialPostPageUrl,
   timeRange,
   country,
+  regionArea,
   language,
   participantType,
+  severity,
   refreshToken,
   onClose,
 }: IncidentReviewQueueProps) {
@@ -285,8 +293,10 @@ function IncidentReviewQueue({
             {
               timeRange,
               country,
+              regionArea,
               language,
               participantType,
+              severity,
               reviewed: view === 'reviewed',
             },
             controller.signal,
@@ -312,7 +322,9 @@ function IncidentReviewQueue({
     country,
     language,
     participantType,
+    regionArea,
     refreshToken,
+    severity,
     timeRange,
     view,
   ])

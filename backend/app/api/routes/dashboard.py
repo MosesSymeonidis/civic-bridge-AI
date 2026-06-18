@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.db.session import get_db
-from app.domain.analytics import ParticipantType
+from app.domain.analytics import ParticipantType, SeverityTier
 from app.schemas.analytics import (
     DashboardSummaryResponse,
     DashboardTimeRange,
@@ -33,8 +33,12 @@ async def get_dashboard_summary(
         DashboardTimeRange.days_30
     ),
     country: Annotated[str | None, Query(min_length=2, max_length=100)] = None,
+    region_area: Annotated[
+        str | None, Query(min_length=2, max_length=120)
+    ] = None,
     language: Annotated[str | None, Query(min_length=2, max_length=80)] = None,
     participant_type: Annotated[ParticipantType | None, Query()] = None,
+    severity: Annotated[SeverityTier | None, Query()] = None,
     minimum_group_size: Annotated[int, Query(ge=1, le=100)] = (
         settings.dashboard_minimum_group_size
     ),
@@ -44,8 +48,10 @@ async def get_dashboard_summary(
         db,
         time_range=time_range,
         country=country,
+        region_area=region_area,
         language=language,
         participant_type=participant_type,
+        severity=severity,
         minimum_group_size=minimum_group_size,
     )
 
@@ -58,8 +64,12 @@ async def get_incident_reviews(
         DashboardTimeRange.days_30
     ),
     country: Annotated[str | None, Query(min_length=2, max_length=100)] = None,
+    region_area: Annotated[
+        str | None, Query(min_length=2, max_length=120)
+    ] = None,
     language: Annotated[str | None, Query(min_length=2, max_length=80)] = None,
     participant_type: Annotated[ParticipantType | None, Query()] = None,
+    severity: Annotated[SeverityTier | None, Query()] = None,
     reviewed: Annotated[bool, Query()] = False,
     limit: Annotated[int, Query(ge=1, le=100)] = 50,
 ) -> IncidentReviewQueueResponse:
@@ -68,8 +78,10 @@ async def get_incident_reviews(
         db,
         time_range=time_range,
         country=country,
+        region_area=region_area,
         language=language,
         participant_type=participant_type,
+        severity=severity,
         reviewed=reviewed,
         limit=limit,
     )
