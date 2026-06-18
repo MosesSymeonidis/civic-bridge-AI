@@ -6,6 +6,10 @@ application services, runs database migrations, loads synthetic dashboard
 records for the demo, serves the frontend with Nginx, and proxies frontend API
 requests to the application services.
 
+## Live instance
+
+The application is available at http://34.65.145.212:3000/.
+
 ## Structure
 
 ```text
