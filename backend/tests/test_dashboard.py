@@ -642,6 +642,7 @@ async def test_semantic_classifications_are_idempotent_and_feed_scatterplot(
             "is_outlier": False,
             "keywords": ["refugee", "exclude"],
             "participant_type": "student",
+            "incident_text": None,
         }
     ]
 

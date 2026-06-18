@@ -81,6 +81,22 @@ def _incident_text_from_messages(
     )
 
 
+def _incident_text_from_payload(payload: dict[str, Any] | None) -> str:
+    if not payload:
+        return ""
+
+    incident_text = str(payload.get("incident_text", "")).strip()
+    if incident_text:
+        return incident_text
+
+    spans = [
+        str(item.get("span", "")).strip()
+        for item in payload.get("barriers", [])
+        if isinstance(item, dict) and item.get("span")
+    ]
+    return "\n".join(dict.fromkeys(spans))
+
+
 def _completion_response(
     discussion: DiscussionAnalysis,
 ) -> DiscussionCompletionResponse:
@@ -112,14 +128,7 @@ def _completion_response(
 
 def _review_item(discussion: DiscussionAnalysis) -> IncidentReviewItem:
     payload = discussion.analysis_payload or {}
-    incident_text = str(payload.get("incident_text", "")).strip()
-    if not incident_text:
-        spans = [
-            str(item.get("span", "")).strip()
-            for item in payload.get("barriers", [])
-            if isinstance(item, dict) and item.get("span")
-        ]
-        incident_text = "\n".join(dict.fromkeys(spans))
+    incident_text = _incident_text_from_payload(payload)
     rationale = [
         IncidentAnalysisRationale.model_validate(item)
         for item in payload.get("rationale", [])
@@ -711,8 +720,16 @@ def _semantic_cluster_plot(
             points=[],
         )
 
-    analyses = db.scalars(
-        select(SemanticClusterAnalysis)
+    analysis_rows = db.execute(
+        select(
+            SemanticClusterAnalysis,
+            DiscussionAnalysis.analysis_payload,
+        )
+        .outerjoin(
+            DiscussionAnalysis,
+            DiscussionAnalysis.analysis_event_id
+            == SemanticClusterAnalysis.classification_event_id,
+        )
         .where(
             *version_conditions,
             SemanticClusterAnalysis.keywords_topic_id.in_(topic_counts),
@@ -723,7 +740,7 @@ def _semantic_cluster_plot(
     categories: dict[int, DashboardSemanticClusterCategory] = {}
     points: list[DashboardSemanticClusterPoint] = []
 
-    for analysis in analyses:
+    for analysis, analysis_payload in analysis_rows:
         display_category = (
             analysis.nearest_category
             if analysis.is_outlier
@@ -760,6 +777,10 @@ def _semantic_cluster_plot(
                 is_outlier=analysis.is_outlier,
                 keywords=keywords[:5],
                 participant_type=analysis.participant_type,
+                incident_text=(
+                    _incident_text_from_payload(analysis_payload)
+                    or None
+                ),
             )
         )
 

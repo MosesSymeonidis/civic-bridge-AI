@@ -10,6 +10,7 @@ export type SemanticClusterPoint = {
   is_outlier: boolean
   keywords: string[]
   participant_type: 'student' | 'educator' | 'social-media'
+  incident_text: string | null
 }
 
 export type SemanticClusterCategory = {
@@ -112,6 +113,8 @@ function SemanticClusterScatterplot({
   minimumGroupSize,
 }: SemanticClusterScatterplotProps) {
   const [selectedGroup, setSelectedGroup] = useState<string | null>(null)
+  const [hoveredPoint, setHoveredPoint] =
+    useState<SemanticClusterPoint | null>(null)
   const categories = plot?.categories ?? []
   const points = plot?.points ?? []
   const groups = groupCategories(categories)
@@ -201,6 +204,7 @@ function SemanticClusterScatterplot({
           <div className="semantic-cluster-plot">
             <svg
               aria-label="Two-dimensional semantic cluster scatterplot"
+              onPointerLeave={() => setHoveredPoint(null)}
               role="img"
               viewBox={`0 0 ${width} ${height}`}
             >
@@ -266,7 +270,10 @@ function SemanticClusterScatterplot({
                   (groupKey && colorByGroup.get(groupKey)) ?? '#7c8982'
                 const isActive =
                   activeGroupKey === null || groupKey === activeGroupKey
+                const isHovered = hoveredPoint === point
+                const incidentText = point.incident_text?.trim()
                 const title = [
+                  incidentText ? `Incident: ${incidentText}` : null,
                   point.category ?? `Topic ${point.topic_id}`,
                   point.parent_category,
                   point.keywords.join(', '),
@@ -284,9 +291,20 @@ function SemanticClusterScatterplot({
                     cy={scaleY(point.y)}
                     fill={color}
                     key={`${point.topic_id}-${index}`}
+                    onBlur={() => setHoveredPoint(null)}
                     onClick={() => setSelectedGroup(groupKey ?? null)}
+                    onFocus={() => setHoveredPoint(point)}
+                    onKeyDown={(event) => {
+                      if (event.key === 'Enter' || event.key === ' ') {
+                        event.preventDefault()
+                        setSelectedGroup(groupKey ?? null)
+                      }
+                    }}
+                    onPointerEnter={() => setHoveredPoint(point)}
                     opacity={isActive ? 0.82 : 0.16}
-                    r={isActive ? 5 : 3.5}
+                    r={isHovered ? 6.5 : isActive ? 5 : 3.5}
+                    role="button"
+                    tabIndex={0}
                   >
                     <title>{title}</title>
                   </circle>
@@ -299,6 +317,23 @@ function SemanticClusterScatterplot({
               </span>
               <span>Circle = anonymized classification event</span>
             </div>
+            {hoveredPoint ? (
+              <div
+                aria-live="polite"
+                className="semantic-cluster-hover-output"
+              >
+                <span>Hovered incident</span>
+                <p>
+                  {hoveredPoint.incident_text?.trim() ||
+                    'No incident text was recorded for this point.'}
+                </p>
+                <small>
+                  {hoveredPoint.category ?? `Topic ${hoveredPoint.topic_id}`}
+                  {' | '}
+                  {hoveredPoint.participant_type.replace('-', ' ')}
+                </small>
+              </div>
+            ) : null}
           </div>
 
           <div className="semantic-cluster-tags">

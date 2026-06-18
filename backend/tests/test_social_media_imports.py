@@ -127,6 +127,9 @@ async def test_social_media_import_is_atomic_deduplicated_and_aggregated(
     ]
     assert sum(point["social_media"] for point in dashboard["trend"]) == 1
     assert dashboard["semantic_clusters"]["total_points"] == 1
+    assert dashboard["semantic_clusters"]["points"][0]["incident_text"] == (
+        "[PERSON_1] is targeted."
+    )
 
     reviews_response = await client.get("/api/v1/dashboard/reviews")
     review = reviews_response.json()["items"][0]

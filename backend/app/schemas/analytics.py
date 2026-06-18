@@ -319,6 +319,7 @@ class DashboardSemanticClusterPoint(BaseModel):
     is_outlier: bool
     keywords: list[str]
     participant_type: ParticipantType
+    incident_text: str | None = None
 
 
 class DashboardSemanticClusterCategory(BaseModel):
