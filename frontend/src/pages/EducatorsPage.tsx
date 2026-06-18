@@ -83,6 +83,7 @@ type EducatorSessionResponse = {
 
 type RagChatResponse = {
   reply: string
+  summary?: string | null
   analysis?: ChatAnalysis | null
   references?: ChatReference[]
   citations?: RagCitation[]
@@ -93,6 +94,7 @@ type ChatMessage = {
   id: string
   role: 'educator' | 'assistant'
   content: string
+  summary?: string | null
   analysis?: ChatAnalysis
   analysisUnavailable?: boolean
   analyticsStorageFailed?: boolean
@@ -508,6 +510,7 @@ function EducatorsPage() {
           id: assistantMessageId,
           role: 'assistant',
           content: reply.reply,
+          summary: reply.summary,
           analysis,
           analysisUnavailable,
           analyticsStorageFailed,
@@ -926,6 +929,7 @@ function EducatorsPage() {
                             )
                           : undefined
                       }
+                      summary={message.summary}
                     />
                   ) : (
                     <p className="chat-message__body">{message.content}</p>

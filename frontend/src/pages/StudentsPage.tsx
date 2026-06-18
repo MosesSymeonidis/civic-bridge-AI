@@ -54,6 +54,7 @@ type StudentSessionResponse = {
 
 type RagChatResponse = {
   reply: string
+  summary?: string | null
   analysis?: ChatAnalysis | null
   references?: ChatReference[]
   citations?: RagCitation[]
@@ -64,6 +65,7 @@ type ChatMessage = {
   id: string
   role: 'student' | 'assistant'
   content: string
+  summary?: string | null
   analysis?: ChatAnalysis
   analysisUnavailable?: boolean
   analyticsStorageFailed?: boolean
@@ -333,6 +335,7 @@ function StudentsPage() {
           id: assistantMessageId,
           role: 'assistant',
           content: reply.reply,
+          summary: reply.summary,
           analysis,
           analysisUnavailable,
           analyticsStorageFailed,
@@ -765,6 +768,8 @@ function StudentsPage() {
                             )
                           : undefined
                       }
+                      summary={message.summary}
+                      summaryMode={Boolean(message.analysis)}
                     />
                   ) : (
                     <p className="chat-message__body">{message.content}</p>

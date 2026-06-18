@@ -2693,6 +2693,46 @@ footer p {
   text-underline-offset: 0.15em;
 }
 
+.chat-markdown__summary {
+  padding-left: 0.7rem;
+  border-left: 3px solid #b8d4c5;
+}
+
+.chat-markdown__summary span {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: #5f6f66;
+  font-size: 0.52rem;
+  font-weight: 850;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.chat-markdown__summary p {
+  margin: 0;
+  color: #263c32;
+  font-size: 0.77rem;
+  line-height: 1.55;
+}
+
+.chat-markdown__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+
+.chat-markdown__full-report {
+  margin-top: 0.85rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid #d8ddd9;
+}
+
+.chat-markdown__full-report > :first-child {
+  margin-top: 0;
+}
+
 .chat-markdown blockquote {
   padding: 0.1rem 0 0.1rem 0.85rem;
   border-left: 3px solid #aebbb3;
@@ -2949,25 +2989,38 @@ footer p {
   line-height: 1.45;
 }
 
-.chat-markdown__dashboard-link {
+.chat-markdown .chat-markdown__report-button,
+.chat-markdown .chat-markdown__dashboard-link {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: 30px;
   width: fit-content;
   max-width: 100%;
-  margin-top: 0.65rem;
   padding: 0.38rem 0.55rem;
   border: 1px solid #b8d4c5;
   border-radius: 0.45rem;
-  color: #12543f;
-  background: #edf7f1;
   font-size: 0.58rem;
   font-weight: 850;
   text-decoration: none;
 }
 
-.chat-markdown__dashboard-link:hover {
+.chat-markdown .chat-markdown__report-button {
+  color: #fff;
+  background: #12543f;
+  border-color: #12543f;
+}
+
+.chat-markdown .chat-markdown__dashboard-link {
+  color: #12543f;
+  background: #edf7f1;
+}
+
+.chat-markdown .chat-markdown__report-button:hover {
+  background: #0d4634;
+}
+
+.chat-markdown .chat-markdown__dashboard-link:hover {
   background: #e2f0e8;
 }
 

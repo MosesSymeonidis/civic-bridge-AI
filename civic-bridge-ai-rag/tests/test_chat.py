@@ -31,6 +31,7 @@ def test_attachment_triggers_analysis(monkeypatch):
                       country="Cyprus", message="what do you make of this?",
                       attachment="some post text")
     assert out["analysis"]["tier"] == 2
+    assert out["summary"] is None
     assert "[echr:offend-shock-disturb]" in out["reply"]
     assert out["references"][0]["id"] == "echr:offend-shock-disturb"
     assert out["references"][0]["url"].startswith("https://")
@@ -177,6 +178,7 @@ def test_student_quoted_distress_words_do_not_trigger_triage(monkeypatch):
                               'me says the scared little snitch, every day". '
                               'Can we look at it together?')
     assert out["triage"] is False
+    assert out["summary"]
 
 
 def test_student_distress_triage_runs_without_any_llm(monkeypatch):
