@@ -81,28 +81,63 @@ function normalizeAgeBand(
     : 'mixed'
 }
 
-function appendReferenceUrls(
+function extractUrls(value: string): string[] {
+  return (
+    value
+      .match(/https?:\/\/[^\s)\],;]+/gi)
+      ?.map((url) => url.replace(/[.,]+$/, '')) ?? []
+  )
+}
+
+function splitTrailingSourceSection(
+  postText: string,
+): { body: string; sourceSection: string } {
+  const lines = postText.trim().split(/\r?\n/)
+  const sourceLinePattern =
+    /^\s*(?:source(?:\s+links?)?|sources?|references?)\s*:/i
+  const sourceHeadingPattern =
+    /^\s*(?:source(?:\s+links?)?|sources?|references?)\s*:?\s*$/i
+
+  for (let index = lines.length - 1; index >= 0; index -= 1) {
+    const line = lines[index].trim()
+    if (!line) continue
+
+    if (sourceLinePattern.test(line) || sourceHeadingPattern.test(line)) {
+      return {
+        body: lines.slice(0, index).join('\n').trim(),
+        sourceSection: lines.slice(index).join('\n').trim(),
+      }
+    }
+
+    if (extractUrls(line).length > 0) continue
+    break
+  }
+
+  return { body: postText.trim(), sourceSection: '' }
+}
+
+function mergeReferenceUrls(
   postText: string,
   references: ChatReference[],
 ): string {
   const referenceUrls = references
     .map((reference) => reference.url?.trim())
     .filter((url): url is string => Boolean(url))
-  const uniqueReferenceUrls = Array.from(new Set(referenceUrls))
+  const { body, sourceSection } = splitTrailingSourceSection(postText)
+  const sourceSectionUrls = extractUrls(sourceSection)
+  const uniqueReferenceUrls = Array.from(
+    new Set([...referenceUrls, ...sourceSectionUrls]),
+  )
   if (uniqueReferenceUrls.length === 0) return postText
 
-  const existingText = postText.toLowerCase()
-  const missingReferenceUrls = uniqueReferenceUrls.filter(
-    (url) => !existingText.includes(url.toLowerCase()),
-  )
-  if (missingReferenceUrls.length === 0) return postText
-
   return [
-    postText.trim(),
+    body,
     '',
     'Source links:',
-    ...missingReferenceUrls.map((url) => url),
-  ].join('\n')
+    ...uniqueReferenceUrls.map((url) => url),
+  ]
+    .filter(Boolean)
+    .join('\n')
 }
 
 function buildSocialMediaPostPrompt(
@@ -145,7 +180,7 @@ function buildSocialMediaPostPrompt(
       'Create one public-facing social media post based on the selected anonymized incidents.',
       'The post must be attractive, social-media ready, and suitable for an official education or public institution account.',
       'Use a warm, clear hook; one practical takeaway; a constructive call to action; and 1-3 relevant hashtags if they fit naturally. Keep it concise enough for LinkedIn, Facebook, or Instagram captions.',
-      'Include a compact source line with 2-3 European or EU-relevant standards supported by the available RAG sources, such as Council of Europe Recommendation CM/Rec(2022)16, ECHR Article 10, education/media-literacy duties, or other retrieved EU/European regulatory sources. Use the full source URLs, not only citation IDs. Do not invent article numbers, URLs, or legal claims.',
+      'Ground any legal or educational claims in European or EU-relevant standards supported by the available RAG sources, such as Council of Europe Recommendation CM/Rec(2022)16, ECHR Article 10, education/media-literacy duties, or other retrieved EU/European regulatory sources. Do not add a separate source, sources, or references section; source links are appended automatically. Do not invent article numbers, URLs, or legal claims.',
       'Do not repeat slurs or inflammatory wording. Paraphrase harm neutrally, validate affected communities, invite constructive dialogue, and point readers toward learning, reporting, or support when appropriate.',
       `Include this page link in the post as the final call to action: ${pageUrl}`,
       'Return only the finished post text, suitable for an official social media caption. Include no markdown heading.',
@@ -390,7 +425,7 @@ function IncidentReviewQueue({
 
       const result = (await response.json()) as RagChatResponse
       setSocialPostDraft(
-        appendReferenceUrls(
+        mergeReferenceUrls(
           result.reply,
           referencesFromRagResponse(result.references, result.citations),
         ),
